@@ -40,27 +40,31 @@
         if (data.response.length > 0) {
 
           let games = data.response.slice(0, 10);
-          let result = "🔥 SCHEDINA DEL GIORNO 🔥<br><br>";
 
-          for (let i = 0; i < 3; i++) {
+          let best = games[Math.floor(Math.random() * games.length)];
 
-            let match = games[Math.floor(Math.random() * games.length)];
-            let name = match.title.toLowerCase();
+          let name = best.title.toLowerCase();
 
-            let tip = "";
+          let tip = "";
 
-            if (name.includes("psg") || name.includes("bayern") || name.includes("city")) {
-              tip = "Over 2.5 ⚽";
-            } else if (name.includes("inter") || name.includes("barcelona")) {
-              tip = "Goal ✅";
-            } else {
-              tip = "Under 3.5 📉";
-            }
-
-            result += match.title + "<br>👉 " + tip + "<br><br>";
+          // LOGICA MIGLIORATA
+          if (name.includes("psg") || name.includes("bayern") || name.includes("manchester city")) {
+            tip = "Over 2.5 ⚽";
+          } 
+          else if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) {
+            tip = "1X 🛡️";
+          } 
+          else if (name.includes("barcelona") || name.includes("real madrid")) {
+            tip = "Goal ✅";
+          } 
+          else {
+            tip = "Under 3.5 📉";
           }
 
-          document.getElementById("out").innerHTML = result;
+          document.getElementById("out").innerHTML =
+            "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
+            best.title + "<br><br>" +
+            "👉 " + tip;
 
         } else {
           document.getElementById("out").innerHTML = "Nessuna partita";
