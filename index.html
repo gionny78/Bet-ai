@@ -39,11 +39,24 @@
 
         if (data.response.length > 0) {
 
-          // prende la prima partita (più rilevante)
-          let best = data.response[0];
+          // prende 5 partite
+          let games = data.response.slice(0, 5);
 
-          // pronostico fisso (più sensato)
-          let tip = "Over 2.5 ⚽";
+          // sceglie una tra le migliori
+          let best = games[Math.floor(Math.random() * games.length)];
+
+          let home = best.title.toLowerCase();
+
+          let tip = "";
+
+          // logica semplice (più "intelligente")
+          if (home.includes("psg") || home.includes("manchester") || home.includes("inter")) {
+            tip = "Over 2.5 ⚽";
+          } else if (home.includes("atalanta") || home.includes("barcelona")) {
+            tip = "Goal ✅";
+          } else {
+            tip = "Under 3.5 📉";
+          }
 
           document.getElementById("out").innerHTML =
             "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
