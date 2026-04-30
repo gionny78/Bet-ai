@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bet AI</title>
+<style>
+body {background:#0f172a; color:white; text-align:center; font-family:Arial;}
+button {padding:10px; background:green; color:white; border:none;}
+</style>
+</head>
+<body>
+
+<h1>⚽ Bet AI</h1>
+<button onclick="run()">Trova giocate</button>
+
+<p id="out"></p>
+
+<script>
+function run(){
+ let r = Math.random();
+
+ if(r > 0.6){
+   document.getElementById("out").innerHTML = "💰 GIOCA (10€)";
+ } else {
+   document.getElementById("out").innerHTML = "🚫 NON GIOCARE";
+ }
+}
+</script>
+
+</body>
+</html>
