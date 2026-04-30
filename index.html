@@ -8,24 +8,11 @@
 Trova giocate
 </button>
 
-<p id="out"></p>
+<p id="out">Clicca il bottone</p>
 
 <script>
 function run() {
-  fetch("https://www.scorebat.com/video-api/v3/")
-    .then(res => res.json())
-    .then(data => {
-      let html = "";
-
-      data.response.slice(0,5).forEach(m => {
-        html += m.title + "<br>";
-      });
-
-      document.getElementById("out").innerHTML = html;
-    })
-    .catch(() => {
-      document.getElementById("out").innerHTML = "Errore";
-    });
+  document.getElementById("out").innerHTML = "FUNZIONA!";
 }
 </script>
 
