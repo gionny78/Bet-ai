@@ -31,12 +31,12 @@
 
     <script>
     function run() {
-        fetch("https://v3.football.api-sports.io/fixtures?live=all", {
-            method: "GET",
-            headers: {
-                "x-apisports-key": "042a5bb7cdac43080f332ac922910006"
-            }
-        })
+        fetch("https://cors-anywhere.herokuapp.com/https://v3.football.api-sports.io/fixtures?live=all", {
+  method: "GET",
+  headers: {
+    "x-apisports-key": "LA_TUA_API_KEY"
+  }
+})
         .then(res => res.json())
         .then(data => {
   if (data.response.length > 0) {
