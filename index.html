@@ -39,21 +39,12 @@
 
         if (data.response.length > 0) {
 
-          // prende una partita casuale
-          let best = data.response[Math.floor(Math.random() * data.response.length)];
+          // prende la prima partita (più rilevante)
+          let best = data.response[0];
 
-          // pronostici possibili
-          let tips = [
-            "Over 2.5 ⚽",
-            "Goal ✅",
-            "1 fisso 🏠",
-            "Under 3.5 📉"
-          ];
+          // pronostico fisso (più sensato)
+          let tip = "Over 2.5 ⚽";
 
-          // sceglie pronostico casuale
-          let tip = tips[Math.floor(Math.random() * tips.length)];
-
-          // output finale
           document.getElementById("out").innerHTML =
             "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
             best.title + "<br><br>" +
@@ -64,4 +55,12 @@
         }
 
       })
-      .
+      .catch(err => {
+        document.getElementById("out").innerHTML = "Errore";
+      });
+
+    }
+  </script>
+
+</body>
+</html>
