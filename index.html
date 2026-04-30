@@ -40,9 +40,21 @@
         .then(res => res.json())
         .then(data => {
             if(data.response.length > 0){
-                let match = data.response[0];
-                document.getElementById("out").innerHTML =
-                    match.teams.home.name + " vs " + match.teams.away.name;
+            let html = "";
+
+data.response.slice(0, 5).forEach(m => {
+  html += m.teams.home.name + " vs " + m.teams.away.name + "<br>";
+});
+
+document.getElementById("out").innerHTML = html;
+
+data.response.slice(0, 5).forEach(m => {
+  html += m.teams.home.name + " vs " + m.teams.away.name + "<br>";
+});
+
+document.getElementById("out").innerHTML = html;
+        
+    
             } else {
                 document.getElementById("out").innerHTML = "Nessuna partita live";
             }
