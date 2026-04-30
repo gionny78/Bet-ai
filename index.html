@@ -39,12 +39,20 @@
         })
         .then(res => res.json())
         .then(data => {
-            if(data.response.length > 0){
-            let html = "";
+  if (data.response.length > 0) {
 
-data.response.slice(0, 5).forEach(m => {
-  html += m.teams.home.name + " vs " + m.teams.away.name + "<br>";
-});
+    let html = "";
+
+    data.response.slice(0, 5).forEach(m => {
+      html += m.teams.home.name + " vs " + m.teams.away.name + "<br>";
+    });
+
+    document.getElementById("out").innerHTML = html;
+
+  } else {
+    document.getElementById("out").innerText = "Nessuna partita";
+  }
+})
 
 document.getElementById("out").innerHTML = html;
 
