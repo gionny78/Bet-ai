@@ -1,77 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Bet AI</title>
-    <style>
-        body {
-            background-color: #0b1a2f;
-            color: white;
-            text-align: center;
-            font-family: Arial;
-        }
+<body style="background:#0b1d2a;color:white;text-align:center;font-family:Arial">
 
-        button {
-            background-color: green;
-            color: white;
-            padding: 15px;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-        }
-    </style>
-</head>
+<h1>⚽ Bet AI</h1>
 
-<body>
+<button onclick="run()" style="padding:15px 30px;background:green;color:white;border:none;font-size:18px">
+Trova giocate
+</button>
 
-    <h1>⚽ Bet AI</h1>
+<p id="out"></p>
 
-    <button onclick="run()">Trova giocate</button>
+<script>
+function run() {
+  fetch("https://www.scorebat.com/video-api/v3/")
+    .then(res => res.json())
+    .then(data => {
+      let html = "";
 
-    <p id="out"></p>
+      data.response.slice(0,5).forEach(m => {
+        html += m.title + "<br>";
+      });
 
-    <script>
-    function run() {
-        fetch("https://cors-anywhere.herokuapp.com/https://v3.football.api-sports.io/fixtures?live=all", {
-  method: "GET",
-  headers: {
-    "x-apisports-key": "042a5bb7cdac43080f332ac922910006"
-  }
-})
-        .then(res => res.json())
-        .then(data => {
-  if (data.response.length > 0) {
-
-    let html = "";
-
-    data.response.slice(0, 5).forEach(m => {
-      html += m.teams.home.name + " vs " + m.teams.away.name + "<br>";
+      document.getElementById("out").innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById("out").innerHTML = "Errore";
     });
-
-    document.getElementById("out").innerHTML = html;
-
-  } else {
-    document.getElementById("out").innerText = "Nessuna partita";
-  }
-})
-
-document.getElementById("out").innerHTML = html;
-
-data.response.slice(0, 5).forEach(m => {
-  html += m.teams.home.name + " vs " + m.teams.away.name + "<br>";
-});
-
-document.getElementById("out").innerHTML = html;
-        
-    
-            } else {
-                document.getElementById("out").innerHTML = "Nessuna partita live";
-            }
-        })
-        .catch(err => {
-            document.getElementById("out").innerHTML = "Errore";
-        });
-    }
-    </script>
+}
+</script>
 
 </body>
 </html>
