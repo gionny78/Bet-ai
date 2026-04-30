@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI PRO</title>
+  <title>Bet AI ULTRA</title>
   <style>
     body {
       background: #0b2239;
       color: white;
       text-align: center;
       font-family: Arial;
-      margin-top: 80px;
+      margin-top: 60px;
     }
 
     button {
@@ -20,8 +20,8 @@
       cursor: pointer;
     }
 
-    .box {
-      margin-top: 30px;
+    .card {
+      margin-top: 20px;
       font-size: 20px;
     }
   </style>
@@ -29,11 +29,11 @@
 
 <body>
 
-  <h1>⚽ Bet AI PRO</h1>
+  <h1>⚽ Bet AI ULTRA</h1>
 
   <button onclick="run()">Genera schedina</button>
 
-  <div id="out" class="box"></div>
+  <div id="out" class="card"></div>
 
   <script>
     function run() {
@@ -42,59 +42,74 @@
       .then(res => res.json())
       .then(data => {
 
-        if (data.response.length > 0) {
+        if (!data.response || data.response.length === 0) {
+          document.getElementById("out").innerHTML = "Nessuna partita";
+          return;
+        }
 
-          let games = data.response.slice(0, 10);
+        // prendi max 15 partite
+        let games = data.response.slice(0, 15);
 
-          let result = "🔥 SCHEDINA PRO 🔥<br><br>";
+        // rimuove duplicati
+        let unique = [];
+        let names = new Set();
 
-          let totalOdds = 1;
+        games.forEach(g => {
+          if (!names.has(g.title)) {
+            names.add(g.title);
+            unique.push(g);
+          }
+        });
 
-          for (let i = 0; i < 3; i++) {
+        // mescola leggermente
+        unique.sort(() => 0.5 - Math.random());
 
-            let match = games[Math.floor(Math.random() * games.length)];
-            let name = match.title.toLowerCase();
+        // prende 3 partite
+        let picks = unique.slice(0, 3);
 
-            let tip = "";
-            let odd = 1.5;
+        let result = "🔥 SCHEDINA ULTRA 🔥<br><br>";
+        let totalOdds = 1;
 
-            if (name.includes("psg") || name.includes("bayern") || name.includes("city")) {
-              tip = "Over 2.5 ⚽";
-              odd = 1.60;
-            } 
-            else if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) {
-              tip = "1X 🛡️";
-              odd = 1.40;
-            } 
-            else if (name.includes("barcelona") || name.includes("real")) {
-              tip = "Goal ✅";
-              odd = 1.70;
-            } 
-            else {
-              tip = "Under 3.5 📉";
-              odd = 1.50;
-            }
+        picks.forEach(match => {
 
-            totalOdds *= odd;
+          let name = match.title.toLowerCase();
+          let tip = "";
+          let odd = 1.50;
 
-            result += match.title + "<br>";
-            result += "👉 " + tip + " | Quota: " + odd.toFixed(2) + "<br><br>";
+          // LOGICA PIÙ PULITA
+          if (name.includes("psg") || name.includes("bayern") || name.includes("manchester city")) {
+            tip = "Over 2.5 ⚽";
+            odd = 1.60;
+          } 
+          else if (name.includes("inter") || name.includes("juventus") || name.includes("milan")) {
+            tip = "1X 🛡️";
+            odd = 1.40;
+          } 
+          else if (name.includes("barcelona") || name.includes("real madrid")) {
+            tip = "Goal ✅";
+            odd = 1.70;
+          } 
+          else {
+            tip = "Under 3.5 📉";
+            odd = 1.50;
           }
 
-          let probability = Math.max(30, (100 / totalOdds)).toFixed(0);
+          totalOdds *= odd;
 
-          result += "💰 Quota totale: " + totalOdds.toFixed(2) + "<br>";
-          result += "📊 Probabilità: " + probability + "%";
+          result += match.title + "<br>";
+          result += "👉 " + tip + " | Quota: " + odd.toFixed(2) + "<br><br>";
+        });
 
-          document.getElementById("out").innerHTML = result;
+        let probability = Math.max(35, (100 / totalOdds)).toFixed(0);
 
-        } else {
-          document.getElementById("out").innerHTML = "Nessuna partita";
-        }
+        result += "💰 Quota totale: " + totalOdds.toFixed(2) + "<br>";
+        result += "📊 Probabilità: " + probability + "%";
+
+        document.getElementById("out").innerHTML = result;
 
       })
       .catch(err => {
-        document.getElementById("out").innerHTML = "Errore";
+        document.getElementById("out").innerHTML = "Errore caricamento";
       });
 
     }
