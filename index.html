@@ -12,9 +12,42 @@ Trova giocate
 
 <script>
 function run() {
-  document.getElementById("out").innerHTML = "FUNZIONA!";
+  fetch("https://www.scorebat.com/video-api/v3/")
+  .then(res => res.json())
+  .then(data => {
+
+    if (data.response.length > 0) {
+
+      // prendi 5 partite
+      let matches = data.response.slice(0, 5);
+
+      // scegli UNA partita casuale
+      let best = matches[Math.floor(Math.random() * matches.length)];
+
+      // lista pronostici
+      let tips = [
+        "Over 2.5 ⚽",
+        "Goal ✅",
+        "1 fisso 🏠",
+        "Under 3.5 📉"
+      ];
+
+      // scegli pronostico casuale
+      let tip = tips[Math.floor(Math.random() * tips.length)];
+
+      // output finale
+      document.getElementById("out").innerHTML =
+        "🔥 MIGLIOR GIOCATA DEL GIORNO 🔥<br><br>" +
+        best.title + "<br><br>" +
+        "👉 Pronostico: " + tip;
+
+    } else {
+      document.getElementById("out").innerHTML = "Nessuna partita trovata";
+    }
+
+  })
+  .catch(err => {
+    document.getElementById("out").innerHTML = "Errore";
+  });
 }
 </script>
-
-</body>
-</html>
