@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI</title>
+  <title>Bet AI PRO</title>
   <style>
     body {
       background: #0b2239;
       color: white;
       text-align: center;
       font-family: Arial;
-      margin-top: 100px;
+      margin-top: 80px;
     }
 
     button {
@@ -19,16 +19,21 @@
       font-size: 18px;
       cursor: pointer;
     }
+
+    .box {
+      margin-top: 30px;
+      font-size: 20px;
+    }
   </style>
 </head>
 
 <body>
 
-  <h1>⚽ Bet AI</h1>
+  <h1>⚽ Bet AI PRO</h1>
 
-  <button onclick="run()">Trova giocate</button>
+  <button onclick="run()">Genera schedina</button>
 
-  <p id="out"></p>
+  <div id="out" class="box"></div>
 
   <script>
     function run() {
@@ -41,30 +46,47 @@
 
           let games = data.response.slice(0, 10);
 
-          let best = games[Math.floor(Math.random() * games.length)];
+          let result = "🔥 SCHEDINA PRO 🔥<br><br>";
 
-          let name = best.title.toLowerCase();
+          let totalOdds = 1;
 
-          let tip = "";
+          for (let i = 0; i < 3; i++) {
 
-          // LOGICA MIGLIORATA
-          if (name.includes("psg") || name.includes("bayern") || name.includes("manchester city")) {
-            tip = "Over 2.5 ⚽";
-          } 
-          else if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) {
-            tip = "1X 🛡️";
-          } 
-          else if (name.includes("barcelona") || name.includes("real madrid")) {
-            tip = "Goal ✅";
-          } 
-          else {
-            tip = "Under 3.5 📉";
+            let match = games[Math.floor(Math.random() * games.length)];
+            let name = match.title.toLowerCase();
+
+            let tip = "";
+            let odd = 1.5;
+
+            if (name.includes("psg") || name.includes("bayern") || name.includes("city")) {
+              tip = "Over 2.5 ⚽";
+              odd = 1.60;
+            } 
+            else if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) {
+              tip = "1X 🛡️";
+              odd = 1.40;
+            } 
+            else if (name.includes("barcelona") || name.includes("real")) {
+              tip = "Goal ✅";
+              odd = 1.70;
+            } 
+            else {
+              tip = "Under 3.5 📉";
+              odd = 1.50;
+            }
+
+            totalOdds *= odd;
+
+            result += match.title + "<br>";
+            result += "👉 " + tip + " | Quota: " + odd.toFixed(2) + "<br><br>";
           }
 
-          document.getElementById("out").innerHTML =
-            "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-            best.title + "<br><br>" +
-            "👉 " + tip;
+          let probability = Math.max(30, (100 / totalOdds)).toFixed(0);
+
+          result += "💰 Quota totale: " + totalOdds.toFixed(2) + "<br>";
+          result += "📊 Probabilità: " + probability + "%";
+
+          document.getElementById("out").innerHTML = result;
 
         } else {
           document.getElementById("out").innerHTML = "Nessuna partita";
