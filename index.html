@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI</title>
+  <title>Bet AI PRO+</title>
 
   <style>
     body {
@@ -24,7 +24,7 @@
 
     .card {
       background: #132f4c;
-      margin: 20px auto;
+      margin: 15px auto;
       padding: 15px;
       border-radius: 10px;
       width: 80%;
@@ -40,12 +40,18 @@
       font-size: 20px;
       color: #00ffcc;
     }
+
+    .total {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #ffd700;
+    }
   </style>
 </head>
 
 <body>
 
-  <h1>⚽ Bet AI</h1>
+  <h1>⚽ Bet AI PRO+</h1>
 
   <button onclick="run()">Genera schedina</button>
 
@@ -58,12 +64,16 @@
       .then(res => res.json())
       .then(data => {
 
-        let games = data.response.slice(0, 15);
+        let games = data.response.slice(0, 20);
 
+        let used = new Set();
         let scoredGames = [];
 
         // assegna punteggio
         games.forEach(match => {
+
+          if (used.has(match.title)) return;
+          used.add(match.title);
 
           let name = match.title.toLowerCase();
           let score = 0;
@@ -79,34 +89,50 @@
           scoredGames.push({ match, score });
         });
 
-        // ordina per punteggio
+        // ordina
         scoredGames.sort((a, b) => b.score - a.score);
 
-        // prende le migliori 3
+        // prende 3 migliori
         let picks = scoredGames.slice(0, 3);
 
-        let html = "<h2>🔥 SCHEDINA DEL GIORNO 🔥</h2>";
+        let html = "<h2>🔥 SCHEDINA PRO 🔥</h2>";
+
+        let totalOdds = 1;
 
         picks.forEach(item => {
 
-          let name = item.match.title.toLowerCase();
           let tip = "";
+          let odd = 1.50;
 
           if (item.score >= 3) {
             tip = "Over 2.5 ⚽";
+            odd = 1.60;
           } else if (item.score >= 2) {
             tip = "Goal ✅";
+            odd = 1.70;
           } else {
             tip = "Under 3.5 📉";
+            odd = 1.50;
           }
+
+          totalOdds *= odd;
 
           html += `
             <div class="card">
               <div class="title">${item.match.title}</div>
-              <div class="tip">👉 ${tip}</div>
+              <div class="tip">👉 ${tip} | Quota: ${odd.toFixed(2)}</div>
             </div>
           `;
         });
+
+        let probability = Math.max(35, (100 / totalOdds)).toFixed(0);
+
+        html += `
+          <div class="total">
+            💰 Quota totale: ${totalOdds.toFixed(2)}<br>
+            📊 Probabilità: ${probability}%
+          </div>
+        `;
 
         document.getElementById("out").innerHTML = html;
 
