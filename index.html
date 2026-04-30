@@ -18,13 +18,8 @@ function run() {
 
     if (data.response.length > 0) {
 
-      // prendi 5 partite
-      let matches = data.response.slice(0, 5);
+      let best = data.response[Math.floor(Math.random() * data.response.length)];
 
-      // scegli UNA partita casuale
-      let best = matches[Math.floor(Math.random() * matches.length)];
-
-      // lista pronostici
       let tips = [
         "Over 2.5 ⚽",
         "Goal ✅",
@@ -32,17 +27,15 @@ function run() {
         "Under 3.5 📉"
       ];
 
-      // scegli pronostico casuale
       let tip = tips[Math.floor(Math.random() * tips.length)];
 
-      // output finale
       document.getElementById("out").innerHTML =
-        "🔥 MIGLIOR GIOCATA DEL GIORNO 🔥<br><br>" +
+        "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
         best.title + "<br><br>" +
-        "👉 Pronostico: " + tip;
+        "👉 " + tip;
 
     } else {
-      document.getElementById("out").innerHTML = "Nessuna partita trovata";
+      document.getElementById("out").innerHTML = "Nessuna partita";
     }
 
   })
