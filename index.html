@@ -1,49 +1,122 @@
-<script>
-function run() {
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bet AI</title>
 
-  fetch("https://www.scorebat.com/video-api/v3/")
-  .then(res => res.json())
-  .then(data => {
-
-    let games = data.response.slice(0, 10);
-
-    let bestMatch = null;
-    let bestScore = 0;
-
-    games.forEach(match => {
-
-      let name = match.title.toLowerCase();
-      let score = 0;
-
-      // LOGICA BASE
-      if (name.includes("psg")) score += 3;
-      if (name.includes("bayern")) score += 3;
-      if (name.includes("city")) score += 3;
-      if (name.includes("real")) score += 2;
-      if (name.includes("inter")) score += 2;
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestMatch = match;
-      }
-    });
-
-    let tip = "";
-
-    if (bestScore >= 3) {
-      tip = "Over 2.5 ⚽";
-    } else if (bestScore >= 2) {
-      tip = "Goal ✅";
-    } else {
-      tip = "Under 3.5 📉";
+  <style>
+    body {
+      background: #0b2239;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+      margin-top: 50px;
     }
 
-    document.getElementById("out").innerHTML =
-      "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-      bestMatch.title + "<br><br>" +
-      "👉 " + tip;
+    button {
+      background: green;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
 
-  });
+    .card {
+      background: #132f4c;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+    }
 
-}
-</script>
+    .title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .tip {
+      font-size: 20px;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>⚽ Bet AI</h1>
+
+  <button onclick="run()">Genera schedina</button>
+
+  <div id="out"></div>
+
+  <script>
+    function run() {
+
+      fetch("https://www.scorebat.com/video-api/v3/")
+      .then(res => res.json())
+      .then(data => {
+
+        let games = data.response.slice(0, 15);
+
+        let scoredGames = [];
+
+        // assegna punteggio
+        games.forEach(match => {
+
+          let name = match.title.toLowerCase();
+          let score = 0;
+
+          if (name.includes("psg")) score += 3;
+          if (name.includes("bayern")) score += 3;
+          if (name.includes("manchester")) score += 3;
+          if (name.includes("real")) score += 2;
+          if (name.includes("barcelona")) score += 2;
+          if (name.includes("inter")) score += 2;
+          if (name.includes("milan")) score += 2;
+
+          scoredGames.push({ match, score });
+        });
+
+        // ordina per punteggio
+        scoredGames.sort((a, b) => b.score - a.score);
+
+        // prende le migliori 3
+        let picks = scoredGames.slice(0, 3);
+
+        let html = "<h2>🔥 SCHEDINA DEL GIORNO 🔥</h2>";
+
+        picks.forEach(item => {
+
+          let name = item.match.title.toLowerCase();
+          let tip = "";
+
+          if (item.score >= 3) {
+            tip = "Over 2.5 ⚽";
+          } else if (item.score >= 2) {
+            tip = "Goal ✅";
+          } else {
+            tip = "Under 3.5 📉";
+          }
+
+          html += `
+            <div class="card">
+              <div class="title">${item.match.title}</div>
+              <div class="tip">👉 ${tip}</div>
+            </div>
+          `;
+        });
+
+        document.getElementById("out").innerHTML = html;
+
+      })
+      .catch(() => {
+        document.getElementById("out").innerHTML = "Errore";
+      });
+
+    }
+  </script>
+
+</body>
+</html>
