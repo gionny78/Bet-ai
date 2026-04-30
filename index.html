@@ -39,29 +39,28 @@
 
         if (data.response.length > 0) {
 
-          // prende 5 partite
-          let games = data.response.slice(0, 5);
+          let games = data.response.slice(0, 10);
+          let result = "🔥 SCHEDINA DEL GIORNO 🔥<br><br>";
 
-          // sceglie una tra le migliori
-          let best = games[Math.floor(Math.random() * games.length)];
+          for (let i = 0; i < 3; i++) {
 
-          let home = best.title.toLowerCase();
+            let match = games[Math.floor(Math.random() * games.length)];
+            let name = match.title.toLowerCase();
 
-          let tip = "";
+            let tip = "";
 
-          // logica semplice (più "intelligente")
-          if (home.includes("psg") || home.includes("manchester") || home.includes("inter")) {
-            tip = "Over 2.5 ⚽";
-          } else if (home.includes("atalanta") || home.includes("barcelona")) {
-            tip = "Goal ✅";
-          } else {
-            tip = "Under 3.5 📉";
+            if (name.includes("psg") || name.includes("bayern") || name.includes("city")) {
+              tip = "Over 2.5 ⚽";
+            } else if (name.includes("inter") || name.includes("barcelona")) {
+              tip = "Goal ✅";
+            } else {
+              tip = "Under 3.5 📉";
+            }
+
+            result += match.title + "<br>👉 " + tip + "<br><br>";
           }
 
-          document.getElementById("out").innerHTML =
-            "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-            best.title + "<br><br>" +
-            "👉 " + tip;
+          document.getElementById("out").innerHTML = result;
 
         } else {
           document.getElementById("out").innerHTML = "Nessuna partita";
