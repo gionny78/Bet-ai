@@ -38,80 +38,72 @@
   <div id="out">Clicca per analizzare</div>
 
   <script>
-    function run() {
+function run() {
 
-      fetch("https://www.scorebat.com/video-api/v3/")
-      .then(res => res.json())
-      .then(data => {
-
-        let games = data.response.slice(0, 15);
-
-        let bestMatch = null;
-        let bestScore = -999;
-        let bestTip = "";
-
-        games.forEach(match => {
-
-          let name = match.title.toLowerCase();
-
-          let score = 0;
-          let tip = "";
-
-          // 🧠 FORZA SQUADRE
-          if (name.includes("psg") || name.includes("bayern") || name.includes("manchester")) {
-            score += 5;
-          }
-
-          if (name.includes("real") || name.includes("barcelona")) {
-            score += 4;
-          }
-
-          if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) {
-            score += 3;
-          }
-
-          // 🏠 CASA
-          score += 1;
-
-          // ⚽ ATTACCO
-          let attack = Math.random() * 3;
-
-          // 🛡 DIFESA
-          let defense = Math.random() * 3;
-
-          score += attack + defense;
-
-          // 🎯 PRONOSTICO
-          if (attack > 2) {
-            tip = "Over 2.5 ⚽";
-          } else if (defense > 2) {
-            tip = "Under 3.5 📉";
-          } else if (score > 6) {
-            tip = "1 fisso 🏠";
-          } else {
-            tip = "Goal ✅";
-          }
-
-          if (score > bestScore) {
-            bestScore = score;
-            bestMatch = match;
-            bestTip = tip;
-          }
-
-        });
-
-        document.getElementById("out").innerHTML =
-          "🔥 AI CONSIGLIA 🔥<br><br>" +
-          bestMatch.title + "<br><br>" +
-          "👉 " + bestTip;
-
-      })
-      .catch(() => {
-        document.getElementById("out").innerHTML = "Errore caricamento";
-      });
-
+  fetch("https://v3.football.api-sports.io/fixtures?next=10", {
+    method: "GET",
+    headers: {
+      "x-apisports-key": "METTI_LA_TUA_API_KEY"
     }
-  </script>
+  })
+  .then(res => res.json())
+  .then(data => {
 
-</body>
-</html>
+    let matches = data.response;
+
+    let bestMatch = null;
+    let bestScore = -999;
+    let bestTip = "";
+
+    matches.forEach(m => {
+
+      let home = m.teams.home.name;
+      let away = m.teams.away.name;
+
+      let score = 0;
+
+      // 🏠 CASA
+      score += 2;
+
+      // ⚽ IMPORTANZA PARTITA
+      if (m.league.name.includes("Premier") || m.league.name.includes("Serie A")) {
+        score += 3;
+      }
+
+      // ⏱ PARTITE VICINE (più interessanti)
+      if (m.fixture.status.short === "NS") {
+        score += 2;
+      }
+
+      // 🎯 PRONOSTICO
+      let tip = "";
+
+      if (score >= 6) {
+        tip = "Over 2.5 ⚽";
+      } else if (score >= 4) {
+        tip = "Goal ✅";
+      } else {
+        tip = "Under 3.5 📉";
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = m;
+        bestTip = tip;
+      }
+
+    });
+
+    document.getElementById("out").innerHTML =
+      "🔥 MIGLIOR PARTITA 🔥<br><br>" +
+      bestMatch.teams.home.name + " - " +
+      bestMatch.teams.away.name + "<br><br>" +
+      "👉 " + bestTip;
+
+  })
+  .catch(() => {
+    document.getElementById("out").innerHTML = "Errore API";
+  });
+
+}
+</script>
