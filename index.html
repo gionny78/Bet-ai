@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI FIX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      background: #0b2239;
-      color: white;
-      text-align: center;
-      font-family: Arial;
-    }
+<style>
+body {
+  background: #0b2239;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
 
-    button {
-      font-size: 22px;
-      padding: 15px 30px;
-      margin-top: 20px;
-      background: green;
-      color: white;
-      border: none;
-      border-radius: 10px;
-    }
+h1 {
+  font-size: 40px;
+}
 
-    .card {
-      background: #132f4c;
-      margin: 10px;
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 20px;
-    }
-  </style>
+button {
+  font-size: 25px;
+  padding: 15px 30px;
+  margin-top: 20px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+#out {
+  margin-top: 30px;
+  font-size: 22px;
+}
+
+.card {
+  background: #132f4c;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 10px;
+}
+</style>
+
 </head>
 
 <body>
 
 <h1>⚽ Bet AI</h1>
 
-<button onclick="run()">Carica partite</button>
+<button onclick="run()">Trova giocate</button>
 
 <div id="out">Premi il bottone</div>
 
@@ -43,40 +52,13 @@
 function run() {
 
   let out = document.getElementById("out");
-  out.innerHTML = "⏳ Caricamento...";
 
-  fetch("https://www.scorebat.com/video-api/v3/")
-  .then(res => res.json())
-  .then(data => {
-
-    console.log(data); // DEBUG
-
-    if (!data || !data.response) {
-      out.innerHTML = "❌ Errore API";
-      return;
-    }
-
-    let matches = data.response;
-
-    let html = "<h2>📅 PARTITE TROVATE</h2>";
-
-    if (matches.length === 0) {
-      html += "⚠️ Nessuna partita disponibile";
-    } else {
-
-      matches.slice(0,5).forEach(m => {
-        html += `<div class="card">${m.title}</div>`;
-      });
-
-    }
-
-    out.innerHTML = html;
-
-  })
-  .catch(err => {
-    out.innerHTML = "❌ Errore caricamento";
-    console.log(err);
-  });
+  // TEST BASE (senza API)
+  out.innerHTML = `
+    🔥 MIGLIOR GIOCATA 🔥<br><br>
+    Manchester United - Brentford<br><br>
+    👉 Over 2.5 ⚽
+  `;
 
 }
 </script>
