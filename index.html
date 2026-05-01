@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bet AI</title>
 
 <style>
 body {
-  background: #0b2239;
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(#0b2a3a, #061a24);
   color: white;
   text-align: center;
-  font-family: Arial;
 }
 
 h1 {
+  margin-top: 40px;
   font-size: 40px;
 }
 
 button {
-  font-size: 25px;
-  padding: 15px 30px;
   margin-top: 20px;
+  padding: 15px 30px;
+  font-size: 20px;
   background: green;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 #out {
   margin-top: 30px;
   font-size: 22px;
-}
-
-.card {
-  background: #132f4c;
-  margin: 10px;
-  padding: 15px;
-  border-radius: 10px;
 }
 </style>
 
@@ -46,21 +42,42 @@ button {
 
 <button onclick="run()">Trova giocate</button>
 
-<div id="out">Premi il bottone</div>
+<div id="out"></div>
 
 <script>
+
 function run() {
 
-  let out = document.getElementById("out");
+  document.getElementById("out").innerHTML = "⏳ Caricamento...";
 
-  // TEST BASE (senza API)
-  out.innerHTML = `
-    🔥 MIGLIOR GIOCATA 🔥<br><br>
-    Manchester United - Brentford<br><br>
-    👉 Over 2.5 ⚽
-  `;
+  // PARTITE DI TEST (così funziona sicuro)
+  let matches = [
+    "Inter - Milan",
+    "Real Madrid - Valencia",
+    "Manchester City - Chelsea",
+    "Juventus - Napoli",
+    "PSG - Lyon"
+  ];
 
+  // scegli partita migliore (random per ora)
+  let best = matches[Math.floor(Math.random() * matches.length)];
+
+  // pronostici
+  let tips = [
+    "Over 2.5 ⚽",
+    "Goal ✅",
+    "1 fisso 🏠",
+    "Under 3.5 📉"
+  ];
+
+  let tip = tips[Math.floor(Math.random() * tips.length)];
+
+  document.getElementById("out").innerHTML =
+    "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
+    best +
+    "<br><br>👉 " + tip;
 }
+
 </script>
 
 </body>
