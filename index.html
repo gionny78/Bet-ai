@@ -1,191 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Bet AI PRO</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0b2239, #091a2e);
+    color: white;
+    text-align: center;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0b2239, #091a2e);
-      color: white;
-      text-align: center;
-    }
+  h1 {
+    font-size: 40px; /* 🔥 più grande */
+    margin-top: 20px;
+  }
 
-    .container {
-      padding: 20px;
-    }
+  button {
+    font-size: 22px; /* 🔥 bottone grande */
+    padding: 18px 35px;
+  }
 
-    h1 {
-      margin-top: 20px;
-      font-size: 28px;
-    }
+  .card {
+    padding: 25px;
+    border-radius: 15px;
+    width: 95%;
+    font-size: 20px; /* 🔥 testo base più grande */
+  }
 
-    button {
-      background: linear-gradient(45deg, #00c853, #00e676);
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      font-size: 18px;
-      border-radius: 30px;
-      margin-top: 20px;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transition: 0.3s;
-    }
+  .match {
+    font-size: 24px; /* 🔥 partita più visibile */
+    margin-bottom: 12px;
+  }
 
-    button:hover {
-      transform: scale(1.05);
-    }
+  .tip {
+    font-size: 28px; /* 🔥 pronostico GRANDE */
+    font-weight: bold;
+    color: #00ffcc;
+  }
 
-    .card {
-      background: #132f4c;
-      margin: 15px auto;
-      padding: 20px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      animation: fadeIn 0.5s ease;
-    }
+  .badge {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
 
-    .match {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .tip {
-      font-size: 22px;
-      color: #00ffcc;
-      font-weight: bold;
-    }
-
-    .badge {
-      background: gold;
-      color: black;
-      padding: 5px 10px;
-      border-radius: 10px;
-      font-size: 14px;
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-
-    .warning {
-      margin-top: 20px;
-      color: #ffd700;
-      font-size: 16px;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(10px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>⚽ Bet AI PRO</h1>
-
-<button onclick="run()">Analizza partite</button>
-
-<div id="out"></div>
-
-</div>
-
-<script>
-function run() {
-
-  document.getElementById("out").innerHTML = "⏳ Analisi in corso...";
-
-  fetch("https://www.scorebat.com/video-api/v3/")
-  .then(res => res.json())
-  .then(data => {
-
-    let games = data.response.slice(0, 40);
-
-    let valid = [];
-
-    let leagues = ["serie a","premier","la liga","bundesliga","ligue 1"];
-
-    let topTeams = [
-      "psg","bayern","manchester","real","barcelona",
-      "inter","milan","juventus","arsenal","liverpool"
-    ];
-
-    games.forEach(match => {
-
-      let title = match.title.toLowerCase();
-      let competition = match.competition.toLowerCase();
-
-      if (!leagues.some(l => competition.includes(l))) return;
-
-      let strong = topTeams.filter(t => title.includes(t)).length;
-      if (strong === 0) return;
-
-      let score = strong * 3;
-      if (title.includes("-")) score += 2;
-
-      let home = Math.random() > 0.4 ? 2 : 0;
-      let form = Math.random() * 2;
-
-      score += home + form;
-
-      if (score < 7) return;
-
-      let tip = "";
-      let badge = "MEDIA";
-
-      if (strong >= 2 && score >= 9) {
-        tip = "Goal ✅";
-        badge = "ALTA";
-      } 
-      else if (home > 1 && score >= 8) {
-        tip = "1 + Over 1.5 🔥";
-        badge = "ALTA";
-      } 
-      else {
-        tip = "Over 1.5 ⚽";
-      }
-
-      valid.push({ match, score, tip, badge });
-
-    });
-
-    valid.sort((a,b) => b.score - a.score);
-
-    let picks = valid.slice(0,2);
-
-    let html = "";
-
-    if (picks.length === 0) {
-      html = "⚠️ Nessuna partita valida oggi";
-    } else {
-
-      picks.forEach(p => {
-        html += `
-          <div class="card">
-            <div class="badge">${p.badge}</div>
-            <div class="match">${p.match.title}</div>
-            <div class="tip">${p.tip}</div>
-          </div>
-        `;
-      });
-
-      html += `<div class="warning">⚠️ Gioca massimo 1-2 eventi</div>`;
-    }
-
-    document.getElementById("out").innerHTML = html;
-
-  })
-  .catch(() => {
-    document.getElementById("out").innerHTML = "Errore caricamento";
-  });
-
-}
-</script>
-
-</body>
-</html>
+  .warning {
+    font-size: 18px;
+  }
+</style>
