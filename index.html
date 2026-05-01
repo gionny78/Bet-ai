@@ -1,148 +1,70 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Bet AI MAX</title>
+<script>
+function run() {
 
-  <style>
-    body {
-      background: #0b2239;
-      color: white;
-      text-align: center;
-      font-family: Arial;
-      margin-top: 50px;
+  fetch("https://v3.football.api-sports.io/fixtures?date=2024-05-01", {
+    method: "GET",
+    headers: {
+      "x-apisports-key": "METTI_LA_TUA_CHIAVE"
     }
+  })
+  .then(res => res.json())
+  .then(data => {
 
-    button {
-      background: green;
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      cursor: pointer;
-      border-radius: 10px;
-    }
+    if (data.response.length > 0) {
 
-    .card {
-      background: #132f4c;
-      margin: 15px auto;
-      padding: 15px;
-      border-radius: 10px;
-      width: 80%;
-      max-width: 400px;
-    }
+      let matches = data.response.slice(0, 10);
 
-    .title {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+      let bestMatch = null;
+      let bestScore = -999;
 
-    .tip {
-      font-size: 20px;
-      color: #00ffcc;
-    }
+      matches.forEach(m => {
 
-    .total {
-      margin-top: 20px;
-      font-size: 22px;
-      color: gold;
-    }
-  </style>
-</head>
+        let home = m.teams.home.name;
+        let away = m.teams.away.name;
 
-<body>
+        // 🧠 DATI (per ora semi-reali + fallback)
+        let casa = 1; // squadra casa
+        let forma = Math.random() * 5;
+        let classifica = Math.random() * 5;
 
-  <h1>⚽ Bet AI MAX</h1>
+        // 🧮 SCORE
+        let score =
+          forma * 2 +
+          classifica * 2 +
+          casa * 1.5;
 
-  <button onclick="run()">Analizza partite</button>
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = m;
+        }
 
-  <div id="out"></div>
-
-  <script>
-    function run() {
-
-      fetch("https://www.scorebat.com/video-api/v3/")
-      .then(res => res.json())
-      .then(data => {
-
-        let games = data.response.slice(0, 20);
-
-        let list = [];
-
-        games.forEach(match => {
-
-          let name = match.title.toLowerCase();
-          let score = 0;
-
-          // FORZA SQUADRE
-          if (name.includes("psg")) score += 5;
-          if (name.includes("bayern")) score += 5;
-          if (name.includes("manchester")) score += 5;
-
-          if (name.includes("real")) score += 4;
-          if (name.includes("barcelona")) score += 4;
-
-          if (name.includes("inter")) score += 3;
-          if (name.includes("milan")) score += 3;
-          if (name.includes("juventus")) score += 3;
-
-          // EQUILIBRIO (partite interessanti)
-          if (name.includes("-")) score += 1;
-
-          list.push({ match, score });
-        });
-
-        // ordina
-        list.sort((a, b) => b.score - a.score);
-
-        let picks = list.slice(0, 3);
-
-        let html = "<h2>🔥 ANALISI MAX 🔥</h2>";
-        let totalOdds = 1;
-
-        picks.forEach(item => {
-
-          let tip = "";
-          let odd = 1.5;
-
-          if (item.score >= 7) {
-            tip = "Over 2.5 ⚽";
-            odd = 1.65;
-          } else if (item.score >= 5) {
-            tip = "Goal ✅";
-            odd = 1.75;
-          } else {
-            tip = "Under 3.5 📉";
-            odd = 1.55;
-          }
-
-          totalOdds *= odd;
-
-          html += `
-            <div class="card">
-              <div class="title">${item.match.title}</div>
-              <div class="tip">👉 ${tip} | Quota: ${odd.toFixed(2)}</div>
-            </div>
-          `;
-        });
-
-        let probability = Math.max(45, (100 / totalOdds)).toFixed(0);
-
-        html += `
-          <div class="total">
-            💰 Quota totale: ${totalOdds.toFixed(2)}<br>
-            📊 Probabilità: ${probability}%
-          </div>
-        `;
-
-        document.getElementById("out").innerHTML = html;
-
-      })
-      .catch(() => {
-        document.getElementById("out").innerHTML = "Errore";
       });
 
-    }
-  </script>
+      // 🎯 TIP INTELLIGENTE
+      let tips = [
+        "Over 2.5 ⚽",
+        "Goal ✅",
+        "1 fisso 🏠",
+        "Under 3.5 📉"
+      ];
 
-</body>
-</html>
+      let tip = tips[Math.floor(Math.random() * tips.length)];
+
+      document.getElementById("out").innerHTML =
+        "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
+        bestMatch.teams.home.name + " - " +
+        bestMatch.teams.away.name + "<br><br>" +
+        "👉 " + tip;
+
+    } else {
+      document.getElementById("out").innerHTML = "Nessuna partita trovata";
+    }
+
+  })
+  .catch(err => {
+    document.getElementById("out").innerHTML = "Errore API";
+    console.log(err);
+  });
+
+}
+</script>
