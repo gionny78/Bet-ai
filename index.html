@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI</title>
+  <title>Bet AI Mobile</title>
 
   <style>
     body {
@@ -18,7 +18,6 @@
       border: none;
       padding: 15px 30px;
       font-size: 18px;
-      cursor: pointer;
       border-radius: 10px;
     }
 
@@ -31,79 +30,77 @@
 
 <body>
 
-  <h1>⚽ Bet AI</h1>
+<h1>⚽ Bet AI</h1>
 
-  <button onclick="run()">Trova giocata</button>
+<button onclick="run()">Analizza</button>
 
-  <div id="out">Clicca per analizzare</div>
+<div id="out">Premi il bottone</div>
 
-  <script>
+<script>
 function run() {
 
-  fetch("https://v3.football.api-sports.io/fixtures?next=10", {
-    method: "GET",
-    headers: {
-      "x-apisports-key": "METTI_LA_TUA_API_KEY"
-    }
-  })
+  fetch("https://www.scorebat.com/video-api/v3/")
   .then(res => res.json())
   .then(data => {
 
-    let matches = data.response;
+    let games = data.response.slice(0, 20);
 
-    let bestMatch = null;
+    let best = null;
     let bestScore = -999;
     let bestTip = "";
 
-    matches.forEach(m => {
+    games.forEach(match => {
 
-      let home = m.teams.home.name;
-      let away = m.teams.away.name;
+      let name = match.title.toLowerCase();
 
       let score = 0;
 
-      // 🏠 CASA
-      score += 2;
+      // squadre forti
+      if (name.includes("psg") || name.includes("bayern") || name.includes("city")) score += 5;
+      if (name.includes("real") || name.includes("barcelona")) score += 4;
+      if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) score += 3;
 
-      // ⚽ IMPORTANZA PARTITA
-      if (m.league.name.includes("Premier") || m.league.name.includes("Serie A")) {
-        score += 3;
-      }
+      // casa (simulata)
+      score += 1;
 
-      // ⏱ PARTITE VICINE (più interessanti)
-      if (m.fixture.status.short === "NS") {
-        score += 2;
-      }
+      // attacco/difesa
+      let attack = Math.random() * 3;
+      let defense = Math.random() * 3;
 
-      // 🎯 PRONOSTICO
+      score += attack + defense;
+
       let tip = "";
 
-      if (score >= 6) {
+      if (attack > 2) {
         tip = "Over 2.5 ⚽";
-      } else if (score >= 4) {
-        tip = "Goal ✅";
-      } else {
+      } else if (defense > 2) {
         tip = "Under 3.5 📉";
+      } else if (score > 6) {
+        tip = "1 fisso 🏠";
+      } else {
+        tip = "Goal ✅";
       }
 
       if (score > bestScore) {
         bestScore = score;
-        bestMatch = m;
+        best = match;
         bestTip = tip;
       }
 
     });
 
     document.getElementById("out").innerHTML =
-      "🔥 MIGLIOR PARTITA 🔥<br><br>" +
-      bestMatch.teams.home.name + " - " +
-      bestMatch.teams.away.name + "<br><br>" +
+      "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
+      best.title + "<br><br>" +
       "👉 " + bestTip;
 
   })
   .catch(() => {
-    document.getElementById("out").innerHTML = "Errore API";
+    document.getElementById("out").innerHTML = "Errore";
   });
 
 }
 </script>
+
+</body>
+</html>
