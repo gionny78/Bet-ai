@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI Mobile PRO</title>
+  <title>Bet AI Tipster</title>
 
   <style>
     body {
@@ -9,7 +9,7 @@
       color: white;
       text-align: center;
       font-family: Arial;
-      margin-top: 60px;
+      margin-top: 50px;
     }
 
     button {
@@ -38,14 +38,20 @@
       font-size: 20px;
       color: #00ffcc;
     }
+
+    .safe {
+      color: #ffd700;
+      margin-top: 20px;
+      font-size: 20px;
+    }
   </style>
 </head>
 
 <body>
 
-<h1>⚽ Bet AI PRO</h1>
+<h1>⚽ Bet AI TIPSTER</h1>
 
-<button onclick="run()">Analizza</button>
+<button onclick="run()">Trova giocate serie</button>
 
 <div id="out"></div>
 
@@ -66,52 +72,49 @@ function run() {
 
       let strength = 0;
 
-      // 🔥 FORZA SQUADRE
-      if (name.includes("psg") || name.includes("bayern") || name.includes("city")) strength += 5;
-      if (name.includes("real") || name.includes("barcelona")) strength += 4;
-      if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) strength += 3;
+      // 🧠 SQUADRE FORTI
+      if (name.includes("psg") || name.includes("bayern") || name.includes("city")) strength += 6;
+      if (name.includes("real") || name.includes("barcelona")) strength += 5;
+      if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) strength += 4;
 
-      // ⚖️ EQUILIBRIO
+      // ⚖️ PARTITA INTERESSANTE
       if (name.includes("-")) strength += 2;
 
-      // 🧠 ATTACCO / DIFESA
-      let attack = Math.random() * 3;
-      let defense = Math.random() * 3;
+      // 🧠 SIMULAZIONE FORMA
+      let form = Math.random() * 3;
 
       // 🏠 CASA
       let home = Math.random() > 0.5 ? 2 : 0;
 
-      let score = strength + attack + defense + home;
+      let score = strength + form + home;
 
       let tip = "";
 
-      // 🎯 LOGICA PRONOSTICO
-      if (attack > 2.2 && strength > 4) {
-        tip = "Over 2.5 ⚽";
+      // 🎯 LOGICA TIPSTER (più realistica)
+      if (strength >= 6 && home > 1) {
+        tip = "1 + Over 1.5 🔥";
       } 
-      else if (attack > 1.5 && defense < 1.5) {
+      else if (strength >= 5) {
+        tip = "Over 1.5 ⚽";
+      } 
+      else if (form > 2) {
         tip = "Goal ✅";
-      } 
-      else if (defense > 2.2) {
-        tip = "Under 3.5 📉";
-      } 
-      else if (home > 1 && strength > 3) {
-        tip = "1 fisso 🏠";
       } 
       else {
-        tip = "Goal ✅";
+        tip = "Under 3.5 📉";
       }
 
       list.push({ match, score, tip });
 
     });
 
-    // ordina migliori
+    // ordina
     list.sort((a, b) => b.score - a.score);
 
-    let picks = list.slice(0, 3);
+    // migliori 2 (più realistico)
+    let picks = list.slice(0, 2);
 
-    let html = "<h2>🔥 SCHEDINA AI 🔥</h2>";
+    let html = "<h2>🔥 GIOCATE CONSIGLIATE 🔥</h2>";
 
     picks.forEach(p => {
       html += `
@@ -121,6 +124,8 @@ function run() {
         </div>
       `;
     });
+
+    html += `<div class="safe">⚠️ Gioca massimo 1-2 eventi</div>`;
 
     document.getElementById("out").innerHTML = html;
 
