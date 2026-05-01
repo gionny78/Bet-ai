@@ -4,7 +4,7 @@ function run() {
   fetch("https://v3.football.api-sports.io/fixtures?date=2024-05-01", {
     method: "GET",
     headers: {
-      "x-apisports-key": "042a5bb7cdac43080f332ac922910006"
+      "x-apisports-key": "METTI_LA_TUA_CHIAVE"
     }
   })
   .then(res => res.json())
@@ -16,45 +16,49 @@ function run() {
 
       let bestMatch = null;
       let bestScore = -999;
+      let bestTip = "";
 
       matches.forEach(m => {
 
         let home = m.teams.home.name;
         let away = m.teams.away.name;
 
-        // 🧠 DATI (per ora semi-reali + fallback)
-        let casa = 1; // squadra casa
-        let forma = Math.random() * 5;
-        let classifica = Math.random() * 5;
+        // 🧠 LOGICA MIGLIORATA
 
-        // 🧮 SCORE
-        let score =
-          forma * 2 +
-          classifica * 2 +
-          casa * 1.5;
+        let casa = 2; // vantaggio casa
+        let forma = Math.random() * 3; // simulazione forma
+        let classifica = Math.random() * 3; // simulazione classifica
+        let attacco = Math.random() * 3;
+        let difesa = Math.random() * 3;
+
+        let score = casa + forma + classifica + attacco + difesa;
+
+        // 🎯 SCELTA PRONOSTICO PIÙ INTELLIGENTE
+        let tip = "";
+
+        if (attacco > 2) {
+          tip = "Over 2.5 ⚽";
+        } else if (difesa > 2) {
+          tip = "Under 3.5 📉";
+        } else if (casa > 1.5) {
+          tip = "1 fisso 🏠";
+        } else {
+          tip = "Goal ✅";
+        }
 
         if (score > bestScore) {
           bestScore = score;
           bestMatch = m;
+          bestTip = tip;
         }
 
       });
-
-      // 🎯 TIP INTELLIGENTE
-      let tips = [
-        "Over 2.5 ⚽",
-        "Goal ✅",
-        "1 fisso 🏠",
-        "Under 3.5 📉"
-      ];
-
-      let tip = tips[Math.floor(Math.random() * tips.length)];
 
       document.getElementById("out").innerHTML =
         "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
         bestMatch.teams.home.name + " - " +
         bestMatch.teams.away.name + "<br><br>" +
-        "👉 " + tip;
+        "👉 " + bestTip;
 
     } else {
       document.getElementById("out").innerHTML = "Nessuna partita trovata";
