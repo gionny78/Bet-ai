@@ -1,127 +1,21 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bet AI</title>
-
-<style>
-body {
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(#0b2a3a, #061a24);
-  color: white;
-  text-align: center;
-  font-family: Arial;
-}
-
-h1 {
-  margin-top: 40px;
-  font-size: 42px;
-}
-
-button {
-  margin-top: 30px;
-  padding: 15px 30px;
-  font-size: 22px;
-  background: #00c853;
-  color: white;
-  border: none;
-  border-radius: 10px;
-}
-
-#out {
-  margin-top: 40px;
-  font-size: 26px;
-  padding: 20px;
-}
-</style>
+  <title>Bet AI</title>
 </head>
-
 <body>
+  <h1>Partite di calcio ⚽</h1>
+  <button onclick="loadMatches()">Carica partite</button>
 
-<h1>⚽ Bet AI</h1>
+  <pre id="output"></pre>
 
-<button onclick="run()">Trova giocate</button>
-
-<div id="out"></div>
-
-<script>
-async function run() {
-
-  document.getElementById("out").innerHTML = "⏳ Analisi partite reali...";
-
-  let apiKey = "042a5bb7cdac43080f332ac922910006";
-
-  try {
-
-    let res = await fetch("https://v3.football.api-sports.io/fixtures?next=10", {
-      headers: {
-        "x-apisports-key": apiKey
-      }
-    });
-
-    let data = await res.json();
-    let matches = data.response;
-
-    if (!matches || matches.length === 0) {
-      document.getElementById("out").innerHTML = "❌ Nessuna partita trovata";
-      return;
+  <script>
+    async function loadMatches() {
+      const res = await fetch("/matches");
+      const data = await res.json();
+      document.getElementById("output").innerText =
+        JSON.stringify(data, null, 2);
     }
-
-    let bestMatch = null;
-    let bestScore = 0;
-
-    matches.forEach(m => {
-
-      let home = m.teams.home.name;
-      let away = m.teams.away.name;
-
-      let score = 0;
-
-      // 🏠 Casa
-      score += 10;
-
-      // ⭐ Squadre forti (semplice AI base)
-      if (
-        home.includes("Real") ||
-        home.includes("City") ||
-        home.includes("Inter") ||
-        home.includes("Bayern") ||
-        home.includes("PSG")
-      ) {
-        score += 20;
-      }
-
-      // ⚽ casuale (simula forma)
-      score += Math.random() * 10;
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestMatch = home + " - " + away;
-      }
-
-    });
-
-    let tips = [
-      "Over 2.5 ⚽",
-      "Goal ✅",
-      "1 fisso 🏠",
-      "Under 3.5 📉"
-    ];
-
-    let tip = tips[Math.floor(Math.random() * tips.length)];
-
-    document.getElementById("out").innerHTML =
-      "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-      bestMatch +
-      "<br><br>👉 " + tip;
-
-  } catch (error) {
-    document.getElementById("out").innerHTML = "❌ Errore caricamento dati";
-  }
-}
-</script>
-
+  </script>
 </body>
 </html>
