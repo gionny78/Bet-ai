@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI Tipster</title>
+  <title>Bet AI ULTRA</title>
 
   <style>
     body {
@@ -39,19 +39,19 @@
       color: #00ffcc;
     }
 
-    .safe {
+    .warning {
       color: #ffd700;
       margin-top: 20px;
-      font-size: 20px;
+      font-size: 18px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>⚽ Bet AI TIPSTER</h1>
+<h1>⚽ Bet AI ULTRA</h1>
 
-<button onclick="run()">Trova giocate serie</button>
+<button onclick="run()">Analizza come tipster</button>
 
 <div id="out"></div>
 
@@ -62,9 +62,9 @@ function run() {
   .then(res => res.json())
   .then(data => {
 
-    let games = data.response.slice(0, 20);
+    let games = data.response.slice(0, 25);
 
-    let list = [];
+    let valid = [];
 
     games.forEach(match => {
 
@@ -72,60 +72,67 @@ function run() {
 
       let strength = 0;
 
-      // 🧠 SQUADRE FORTI
+      // 🔥 squadre top
       if (name.includes("psg") || name.includes("bayern") || name.includes("city")) strength += 6;
       if (name.includes("real") || name.includes("barcelona")) strength += 5;
       if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) strength += 4;
 
-      // ⚖️ PARTITA INTERESSANTE
+      // ⚖️ partita equilibrata
       if (name.includes("-")) strength += 2;
 
-      // 🧠 SIMULAZIONE FORMA
+      // 🧠 forma simulata
       let form = Math.random() * 3;
 
-      // 🏠 CASA
+      // 🏠 casa
       let home = Math.random() > 0.5 ? 2 : 0;
 
       let score = strength + form + home;
 
+      // ❌ FILTRO: scarta partite deboli
+      if (score < 6) return;
+
       let tip = "";
 
-      // 🎯 LOGICA TIPSTER (più realistica)
+      // 🎯 LOGICA PIÙ RIGIDA
       if (strength >= 6 && home > 1) {
         tip = "1 + Over 1.5 🔥";
       } 
-      else if (strength >= 5) {
+      else if (strength >= 5 && form > 1.5) {
         tip = "Over 1.5 ⚽";
       } 
       else if (form > 2) {
         tip = "Goal ✅";
       } 
       else {
-        tip = "Under 3.5 📉";
+        return; // scarta se non convincente
       }
 
-      list.push({ match, score, tip });
+      valid.push({ match, score, tip });
 
     });
 
-    // ordina
-    list.sort((a, b) => b.score - a.score);
+    // ordina migliori
+    valid.sort((a, b) => b.score - a.score);
 
-    // migliori 2 (più realistico)
-    let picks = list.slice(0, 2);
+    // prende massimo 2
+    let picks = valid.slice(0, 2);
 
-    let html = "<h2>🔥 GIOCATE CONSIGLIATE 🔥</h2>";
+    let html = "<h2>🔥 GIOCATE SELEZIONATE 🔥</h2>";
 
-    picks.forEach(p => {
-      html += `
-        <div class="card">
-          <div class="title">${p.match.title}</div>
-          <div class="tip">👉 ${p.tip}</div>
-        </div>
-      `;
-    });
+    if (picks.length === 0) {
+      html += "⚠️ Nessuna partita sicura oggi";
+    } else {
+      picks.forEach(p => {
+        html += `
+          <div class="card">
+            <div class="title">${p.match.title}</div>
+            <div class="tip">👉 ${p.tip}</div>
+          </div>
+        `;
+      });
+    }
 
-    html += `<div class="safe">⚠️ Gioca massimo 1-2 eventi</div>`;
+    html += `<div class="warning">⚠️ Gioca massimo 1-2 eventi</div>`;
 
     document.getElementById("out").innerHTML = html;
 
