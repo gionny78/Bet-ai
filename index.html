@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI REAL</title>
+  <title>Bet AI TOP</title>
 
   <style>
     body {
@@ -33,19 +33,14 @@
       font-size: 20px;
       color: #00ffcc;
     }
-
-    .warning {
-      color: gold;
-      margin-top: 20px;
-    }
   </style>
 </head>
 
 <body>
 
-<h1>⚽ Bet AI REAL</h1>
+<h1>⚽ Bet AI TOP</h1>
 
-<button onclick="run()">Analizza dati</button>
+<button onclick="run()">Analizza top campionati</button>
 
 <div id="out"></div>
 
@@ -56,11 +51,20 @@ function run() {
   .then(res => res.json())
   .then(data => {
 
-    let games = data.response.slice(0, 30);
+    let games = data.response.slice(0, 40);
 
     let valid = [];
 
-    // squadre affidabili
+    // 🔥 campionati importanti
+    let leagues = [
+      "serie a",
+      "premier",
+      "la liga",
+      "bundesliga",
+      "ligue 1"
+    ];
+
+    // 🔥 squadre forti
     let topTeams = [
       "psg","bayern","manchester","real","barcelona",
       "inter","milan","juventus","arsenal","liverpool"
@@ -68,42 +72,43 @@ function run() {
 
     games.forEach(match => {
 
-      let name = match.title.toLowerCase();
+      let title = match.title.toLowerCase();
+      let competition = match.competition.toLowerCase();
 
-      let isTop = topTeams.some(team => name.includes(team));
+      // ❌ filtro campionato
+      let isTopLeague = leagues.some(l => competition.includes(l));
+      if (!isTopLeague) return;
 
-      // ❌ scarta partite senza squadre forti
-      if (!isTop) return;
+      // ❌ filtro squadre
+      let isTopTeam = topTeams.some(t => title.includes(t));
+      if (!isTopTeam) return;
 
       let score = 0;
 
-      // 🔥 squadra forte
-      topTeams.forEach(team => {
-        if (name.includes(team)) score += 3;
+      // forza squadre
+      topTeams.forEach(t => {
+        if (title.includes(t)) score += 3;
       });
 
-      // ⚖️ partita giocabile
-      if (name.includes("-")) score += 2;
+      // equilibrio
+      if (title.includes("-")) score += 2;
 
-      // 🏠 casa simulata
+      // casa
       score += Math.random() > 0.5 ? 2 : 0;
 
-      // 🧠 forma simulata (meno random)
+      // forma simulata
       score += Math.random() * 2;
 
-      // ❌ scarta se basso
-      if (score < 5) return;
+      // scarta deboli
+      if (score < 6) return;
 
       let tip = "";
 
-      // 🎯 logica più “reale”
-      if (score >= 8) {
+      if (score >= 9) {
         tip = "1 + Over 1.5 🔥";
-      } 
-      else if (score >= 6) {
+      } else if (score >= 7) {
         tip = "Over 1.5 ⚽";
-      } 
-      else {
+      } else {
         tip = "Goal ✅";
       }
 
@@ -116,10 +121,10 @@ function run() {
 
     let picks = valid.slice(0, 2);
 
-    let html = "<h2>🔥 GIOCATE REALI 🔥</h2>";
+    let html = "<h2>🔥 TOP GIOCATE 🔥</h2>";
 
     if (picks.length === 0) {
-      html += "⚠️ Nessuna giocata valida oggi";
+      html += "⚠️ Nessuna partita valida nei top campionati";
     } else {
       picks.forEach(p => {
         html += `
@@ -130,8 +135,6 @@ function run() {
         `;
       });
     }
-
-    html += `<div class="warning">⚠️ Solo 1-2 giocate consigliate</div>`;
 
     document.getElementById("out").innerHTML = html;
 
