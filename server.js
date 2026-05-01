@@ -34,4 +34,6 @@ app.get("/matches", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log("Server avviato"));
+app.listen(PORT, () => {
+  console.log("Server avviato");
+});
