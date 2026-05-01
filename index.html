@@ -1,74 +1,117 @@
-<script>
-function run() {
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bet AI</title>
 
-  fetch("https://v3.football.api-sports.io/fixtures?date=2024-05-01", {
-    method: "GET",
-    headers: {
-      "x-apisports-key": "METTI_LA_TUA_CHIAVE"
+  <style>
+    body {
+      background: #0b2239;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+      margin-top: 80px;
     }
-  })
-  .then(res => res.json())
-  .then(data => {
 
-    if (data.response.length > 0) {
+    button {
+      background: green;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
 
-      let matches = data.response.slice(0, 10);
+    #out {
+      margin-top: 30px;
+      font-size: 22px;
+    }
+  </style>
+</head>
 
-      let bestMatch = null;
-      let bestScore = -999;
-      let bestTip = "";
+<body>
 
-      matches.forEach(m => {
+  <h1>⚽ Bet AI</h1>
 
-        let home = m.teams.home.name;
-        let away = m.teams.away.name;
+  <button onclick="run()">Trova giocata</button>
 
-        // 🧠 LOGICA MIGLIORATA
+  <div id="out">Clicca per analizzare</div>
 
-        let casa = 2; // vantaggio casa
-        let forma = Math.random() * 3; // simulazione forma
-        let classifica = Math.random() * 3; // simulazione classifica
-        let attacco = Math.random() * 3;
-        let difesa = Math.random() * 3;
+  <script>
+    function run() {
 
-        let score = casa + forma + classifica + attacco + difesa;
+      fetch("https://www.scorebat.com/video-api/v3/")
+      .then(res => res.json())
+      .then(data => {
 
-        // 🎯 SCELTA PRONOSTICO PIÙ INTELLIGENTE
-        let tip = "";
+        let games = data.response.slice(0, 15);
 
-        if (attacco > 2) {
-          tip = "Over 2.5 ⚽";
-        } else if (difesa > 2) {
-          tip = "Under 3.5 📉";
-        } else if (casa > 1.5) {
-          tip = "1 fisso 🏠";
-        } else {
-          tip = "Goal ✅";
-        }
+        let bestMatch = null;
+        let bestScore = -999;
+        let bestTip = "";
 
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = m;
-          bestTip = tip;
-        }
+        games.forEach(match => {
 
+          let name = match.title.toLowerCase();
+
+          let score = 0;
+          let tip = "";
+
+          // 🧠 FORZA SQUADRE
+          if (name.includes("psg") || name.includes("bayern") || name.includes("manchester")) {
+            score += 5;
+          }
+
+          if (name.includes("real") || name.includes("barcelona")) {
+            score += 4;
+          }
+
+          if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) {
+            score += 3;
+          }
+
+          // 🏠 CASA
+          score += 1;
+
+          // ⚽ ATTACCO
+          let attack = Math.random() * 3;
+
+          // 🛡 DIFESA
+          let defense = Math.random() * 3;
+
+          score += attack + defense;
+
+          // 🎯 PRONOSTICO
+          if (attack > 2) {
+            tip = "Over 2.5 ⚽";
+          } else if (defense > 2) {
+            tip = "Under 3.5 📉";
+          } else if (score > 6) {
+            tip = "1 fisso 🏠";
+          } else {
+            tip = "Goal ✅";
+          }
+
+          if (score > bestScore) {
+            bestScore = score;
+            bestMatch = match;
+            bestTip = tip;
+          }
+
+        });
+
+        document.getElementById("out").innerHTML =
+          "🔥 AI CONSIGLIA 🔥<br><br>" +
+          bestMatch.title + "<br><br>" +
+          "👉 " + bestTip;
+
+      })
+      .catch(() => {
+        document.getElementById("out").innerHTML = "Errore caricamento";
       });
 
-      document.getElementById("out").innerHTML =
-        "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-        bestMatch.teams.home.name + " - " +
-        bestMatch.teams.away.name + "<br><br>" +
-        "👉 " + bestTip;
-
-    } else {
-      document.getElementById("out").innerHTML = "Nessuna partita trovata";
     }
+  </script>
 
-  })
-  .catch(err => {
-    document.getElementById("out").innerHTML = "Errore API";
-    console.log(err);
-  });
-
-}
-</script>
+</body>
+</html>
