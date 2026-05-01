@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI REAL</title>
+  <title>Bet AI FIX</title>
 
   <style>
     body {
@@ -11,82 +11,71 @@
       font-family: Arial;
     }
 
-    h1 { font-size: 38px; }
-
     button {
       font-size: 22px;
       padding: 15px 30px;
-      border-radius: 10px;
+      margin-top: 20px;
       background: green;
       color: white;
       border: none;
+      border-radius: 10px;
     }
 
     .card {
       background: #132f4c;
-      margin: 15px;
-      padding: 20px;
-      border-radius: 15px;
-      font-size: 22px;
-    }
-
-    .tip {
-      font-size: 26px;
-      color: #00ffcc;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 20px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>⚽ Bet AI REAL</h1>
+<h1>⚽ Bet AI</h1>
 
-<button onclick="run()">Partite di oggi</button>
+<button onclick="run()">Carica partite</button>
 
-<div id="out"></div>
+<div id="out">Premi il bottone</div>
 
 <script>
 function run() {
+
+  let out = document.getElementById("out");
+  out.innerHTML = "⏳ Caricamento...";
 
   fetch("https://www.scorebat.com/video-api/v3/")
   .then(res => res.json())
   .then(data => {
 
-    let today = new Date().toISOString().split("T")[0];
+    console.log(data); // DEBUG
 
-    let leagues = ["serie a","premier","la liga","bundesliga","ligue 1"];
-
-    let valid = [];
-
-    data.response.forEach(match => {
-
-      let date = match.date ? match.date.split("T")[0] : "";
-      if (date !== today) return;
-
-      let comp = match.competition.toLowerCase();
-      if (!leagues.some(l => comp.includes(l))) return;
-
-      let title = match.title;
-
-      valid.push(title);
-
-    });
-
-    let html = "<h2>📅 PARTITE DI OGGI</h2>";
-
-    if (valid.length === 0) {
-      html += "⚠️ Nessuna partita trovata";
-    } else {
-      valid.slice(0,5).forEach(m => {
-        html += `<div class="card">${m}</div>`;
-      });
+    if (!data || !data.response) {
+      out.innerHTML = "❌ Errore API";
+      return;
     }
 
-    document.getElementById("out").innerHTML = html;
+    let matches = data.response;
+
+    let html = "<h2>📅 PARTITE TROVATE</h2>";
+
+    if (matches.length === 0) {
+      html += "⚠️ Nessuna partita disponibile";
+    } else {
+
+      matches.slice(0,5).forEach(m => {
+        html += `<div class="card">${m.title}</div>`;
+      });
+
+    }
+
+    out.innerHTML = html;
 
   })
-  .catch(() => {
-    document.getElementById("out").innerHTML = "Errore";
+  .catch(err => {
+    out.innerHTML = "❌ Errore caricamento";
+    console.log(err);
   });
 
 }
