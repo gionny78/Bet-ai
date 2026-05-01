@@ -1,28 +1,30 @@
-const express = require("express");
-const axios = require("axios");
+import express from "express";
+import axios from "axios";
+import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
 
+// homepage
 app.get("/", (req, res) => {
-  res.send("Server attivo ⚽");
+  res.send("Server attivo 🚀");
 });
 
+// endpoint partite
 app.get("/matches", async (req, res) => {
   try {
-    const response = await axios.get("https://www.scorebat.com/video-api/v3/");
+    const response = await axios.get(
+      "https://www.scorebat.com/video-api/v3/feed/?token=demo"
+    );
 
-    const matches = response.data.response.map(m => ({
-      title: m.title,
-      competition: m.competition,
-      date: m.date
-    }));
-
-    res.json(matches);
-  } catch (err) {
-    console.log(err.message);
-    res.send("Errore API");
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Errore API");
   }
 });
 
-app
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Server avviato sulla porta " + PORT);
+});
