@@ -33,6 +33,7 @@ button {
 #out {
   margin-top: 40px;
   font-size: 26px;
+  padding: 20px;
 }
 </style>
 </head>
@@ -46,33 +47,79 @@ button {
 <div id="out"></div>
 
 <script>
-function run() {
+async function run() {
 
-  document.getElementById("out").innerHTML = "⏳ Analisi...";
+  document.getElementById("out").innerHTML = "⏳ Analisi partite reali...";
 
-  let matches = [
-    {match:"Inter - Milan", score:25},
-    {match:"Real Madrid - Valencia", score:28},
-    {match:"Man City - Chelsea", score:27},
-    {match:"Juventus - Napoli", score:24},
-    {match:"PSG - Lyon", score:26}
-  ];
+  let apiKey = "INSERISCI_LA_TUA_API_KEY";
 
-  let best = matches.sort((a,b) => b.score - a.score)[0];
+  try {
 
-  let tips = [
-    "Over 2.5 ⚽",
-    "Goal ✅",
-    "1 fisso 🏠",
-    "Under 3.5 📉"
-  ];
+    let res = await fetch("https://v3.football.api-sports.io/fixtures?next=10", {
+      headers: {
+        "x-apisports-key": apiKey
+      }
+    });
 
-  let tip = tips[Math.floor(Math.random()*tips.length)];
+    let data = await res.json();
+    let matches = data.response;
 
-  document.getElementById("out").innerHTML =
-    "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-    best.match +
-    "<br><br>👉 " + tip;
+    if (!matches || matches.length === 0) {
+      document.getElementById("out").innerHTML = "❌ Nessuna partita trovata";
+      return;
+    }
+
+    let bestMatch = null;
+    let bestScore = 0;
+
+    matches.forEach(m => {
+
+      let home = m.teams.home.name;
+      let away = m.teams.away.name;
+
+      let score = 0;
+
+      // 🏠 Casa
+      score += 10;
+
+      // ⭐ Squadre forti (semplice AI base)
+      if (
+        home.includes("Real") ||
+        home.includes("City") ||
+        home.includes("Inter") ||
+        home.includes("Bayern") ||
+        home.includes("PSG")
+      ) {
+        score += 20;
+      }
+
+      // ⚽ casuale (simula forma)
+      score += Math.random() * 10;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = home + " - " + away;
+      }
+
+    });
+
+    let tips = [
+      "Over 2.5 ⚽",
+      "Goal ✅",
+      "1 fisso 🏠",
+      "Under 3.5 📉"
+    ];
+
+    let tip = tips[Math.floor(Math.random() * tips.length)];
+
+    document.getElementById("out").innerHTML =
+      "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
+      bestMatch +
+      "<br><br>👉 " + tip;
+
+  } catch (error) {
+    document.getElementById("out").innerHTML = "❌ Errore caricamento dati";
+  }
 }
 </script>
 
