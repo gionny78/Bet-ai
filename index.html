@@ -33,7 +33,6 @@ button {
 #out {
   margin-top: 40px;
   font-size: 26px;
-  padding: 20px;
 }
 </style>
 </head>
@@ -47,29 +46,20 @@ button {
 <div id="out"></div>
 
 <script>
-
 function run() {
 
-  document.getElementById("out").innerHTML = "⏳ Analisi partite...";
+  document.getElementById("out").innerHTML = "⏳ Analisi...";
 
-  // PARTITE (simulazione)
   let matches = [
-    {match:"Inter - Milan", casa:8, forma:7, classifica:9},
-    {match:"Real Madrid - Valencia", casa:9, forma:9, classifica:10},
-    {match:"Manchester City - Chelsea", casa:8, forma:9, classifica:9},
-    {match:"Juventus - Napoli", casa:7, forma:7, classifica:8},
-    {match:"PSG - Lyon", casa:9, forma:8, classifica:9}
+    {match:"Inter - Milan", score:25},
+    {match:"Real Madrid - Valencia", score:28},
+    {match:"Man City - Chelsea", score:27},
+    {match:"Juventus - Napoli", score:24},
+    {match:"PSG - Lyon", score:26}
   ];
 
-  // CALCOLO "AI"
-  matches.forEach(m => {
-    m.score = m.casa + m.forma + m.classifica;
-  });
-
-  // MIGLIORE PARTITA
   let best = matches.sort((a,b) => b.score - a.score)[0];
 
-  // TIP POSSIBILI
   let tips = [
     "Over 2.5 ⚽",
     "Goal ✅",
@@ -77,25 +67,13 @@ function run() {
     "Under 3.5 📉"
   ];
 
-  // SCELTA INTELLIGENTE
-  let tip;
+  let tip = tips[Math.floor(Math.random()*tips.length)];
 
-  if(best.score >= 26) {
-    tip = "1 fisso 🏠";
-  } else if(best.score >= 24) {
-    tip = "Over 2.5 ⚽";
-  } else {
-    tip = tips[Math.floor(Math.random()*tips.length)];
-  }
-
-  // OUTPUT
   document.getElementById("out").innerHTML =
     "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
     best.match +
     "<br><br>👉 " + tip;
-
 }
-
 </script>
 
 </body>
