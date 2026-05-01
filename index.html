@@ -1,46 +1,96 @@
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0b2239, #091a2e);
-    color: white;
-    text-align: center;
-  }
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bet AI REAL</title>
 
-  h1 {
-    font-size: 40px; /* 🔥 più grande */
-    margin-top: 20px;
-  }
+  <style>
+    body {
+      background: #0b2239;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+    }
 
-  button {
-    font-size: 22px; /* 🔥 bottone grande */
-    padding: 18px 35px;
-  }
+    h1 { font-size: 38px; }
 
-  .card {
-    padding: 25px;
-    border-radius: 15px;
-    width: 95%;
-    font-size: 20px; /* 🔥 testo base più grande */
-  }
+    button {
+      font-size: 22px;
+      padding: 15px 30px;
+      border-radius: 10px;
+      background: green;
+      color: white;
+      border: none;
+    }
 
-  .match {
-    font-size: 24px; /* 🔥 partita più visibile */
-    margin-bottom: 12px;
-  }
+    .card {
+      background: #132f4c;
+      margin: 15px;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 22px;
+    }
 
-  .tip {
-    font-size: 28px; /* 🔥 pronostico GRANDE */
-    font-weight: bold;
-    color: #00ffcc;
-  }
+    .tip {
+      font-size: 26px;
+      color: #00ffcc;
+    }
+  </style>
+</head>
 
-  .badge {
-    font-size: 16px;
-    padding: 6px 12px;
-  }
+<body>
 
-  .warning {
-    font-size: 18px;
-  }
-</style>
+<h1>⚽ Bet AI REAL</h1>
+
+<button onclick="run()">Partite di oggi</button>
+
+<div id="out"></div>
+
+<script>
+function run() {
+
+  fetch("https://www.scorebat.com/video-api/v3/")
+  .then(res => res.json())
+  .then(data => {
+
+    let today = new Date().toISOString().split("T")[0];
+
+    let leagues = ["serie a","premier","la liga","bundesliga","ligue 1"];
+
+    let valid = [];
+
+    data.response.forEach(match => {
+
+      let date = match.date ? match.date.split("T")[0] : "";
+      if (date !== today) return;
+
+      let comp = match.competition.toLowerCase();
+      if (!leagues.some(l => comp.includes(l))) return;
+
+      let title = match.title;
+
+      valid.push(title);
+
+    });
+
+    let html = "<h2>📅 PARTITE DI OGGI</h2>";
+
+    if (valid.length === 0) {
+      html += "⚠️ Nessuna partita trovata";
+    } else {
+      valid.slice(0,5).forEach(m => {
+        html += `<div class="card">${m}</div>`;
+      });
+    }
+
+    document.getElementById("out").innerHTML = html;
+
+  })
+  .catch(() => {
+    document.getElementById("out").innerHTML = "Errore";
+  });
+
+}
+</script>
+
+</body>
+</html>
