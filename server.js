@@ -17,16 +17,15 @@ app.get("/matches", async (req, res) => {
         method: "GET",
         headers: {
           "X-RapidAPI-Key": process.env.API_KEY,
-          "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
-        },
+          "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+        }
       }
     );
 
     const data = await response.json();
-
     res.json(data);
+
   } catch (error) {
-    console.error(error);
     res.send("Errore API: " + error.message);
   }
 });
