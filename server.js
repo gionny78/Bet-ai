@@ -29,9 +29,10 @@ app.get("/matches", async (req, res) => {
     }));
 
     res.json(matches);
-  } catch (err) {
-    res.send("Errore API");
-  }
+  catch (err) {
+  console.log(err.message);
+  res.send("Errore API");
+}
 });
 
 app.listen(PORT, () => {
