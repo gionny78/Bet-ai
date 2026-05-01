@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI PRO+</title>
+  <title>Bet AI ELITE</title>
 
   <style>
     body {
@@ -44,16 +44,16 @@
     .total {
       margin-top: 20px;
       font-size: 22px;
-      color: #ffd700;
+      color: gold;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>⚽ Bet AI PRO+</h1>
+  <h1>⚽ Bet AI ELITE</h1>
 
-  <button onclick="run()">Genera schedina</button>
+  <button onclick="run()">Analizza e genera</button>
 
   <div id="out"></div>
 
@@ -66,36 +66,39 @@
 
         let games = data.response.slice(0, 20);
 
-        let used = new Set();
         let scoredGames = [];
 
-        // assegna punteggio
+        // valuta ogni partita
         games.forEach(match => {
 
-          if (used.has(match.title)) return;
-          used.add(match.title);
-
           let name = match.title.toLowerCase();
-          let score = 0;
 
-          if (name.includes("psg")) score += 3;
-          if (name.includes("bayern")) score += 3;
-          if (name.includes("manchester")) score += 3;
-          if (name.includes("real")) score += 2;
-          if (name.includes("barcelona")) score += 2;
-          if (name.includes("inter")) score += 2;
-          if (name.includes("milan")) score += 2;
+          let strength = 0;
 
-          scoredGames.push({ match, score });
+          // FORZA SQUADRE (simulata)
+          if (name.includes("psg")) strength += 5;
+          if (name.includes("bayern")) strength += 5;
+          if (name.includes("manchester city")) strength += 5;
+
+          if (name.includes("real madrid")) strength += 4;
+          if (name.includes("barcelona")) strength += 4;
+
+          if (name.includes("inter")) strength += 3;
+          if (name.includes("milan")) strength += 3;
+          if (name.includes("juventus")) strength += 3;
+
+          // bonus random leggero (simula forma)
+          strength += Math.random() * 2;
+
+          scoredGames.push({ match, strength });
         });
 
-        // ordina
-        scoredGames.sort((a, b) => b.score - a.score);
+        // ordina per forza
+        scoredGames.sort((a, b) => b.strength - a.strength);
 
-        // prende 3 migliori
         let picks = scoredGames.slice(0, 3);
 
-        let html = "<h2>🔥 SCHEDINA PRO 🔥</h2>";
+        let html = "<h2>🔥 ANALISI AI 🔥</h2>";
 
         let totalOdds = 1;
 
@@ -104,13 +107,15 @@
           let tip = "";
           let odd = 1.50;
 
-          if (item.score >= 3) {
+          if (item.strength >= 6) {
             tip = "Over 2.5 ⚽";
             odd = 1.60;
-          } else if (item.score >= 2) {
+          } 
+          else if (item.strength >= 4) {
             tip = "Goal ✅";
             odd = 1.70;
-          } else {
+          } 
+          else {
             tip = "Under 3.5 📉";
             odd = 1.50;
           }
@@ -125,12 +130,12 @@
           `;
         });
 
-        let probability = Math.max(35, (100 / totalOdds)).toFixed(0);
+        let probability = Math.max(40, (100 / totalOdds)).toFixed(0);
 
         html += `
           <div class="total">
             💰 Quota totale: ${totalOdds.toFixed(2)}<br>
-            📊 Probabilità: ${probability}%
+            📊 Probabilità AI: ${probability}%
           </div>
         `;
 
