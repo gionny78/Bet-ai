@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI Mobile</title>
+  <title>Bet AI Mobile PRO</title>
 
   <style>
     body {
@@ -9,7 +9,7 @@
       color: white;
       text-align: center;
       font-family: Arial;
-      margin-top: 80px;
+      margin-top: 60px;
     }
 
     button {
@@ -21,20 +21,33 @@
       border-radius: 10px;
     }
 
-    #out {
-      margin-top: 30px;
-      font-size: 22px;
+    .card {
+      background: #132f4c;
+      margin: 15px auto;
+      padding: 15px;
+      border-radius: 10px;
+      width: 85%;
+    }
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .tip {
+      font-size: 20px;
+      color: #00ffcc;
     }
   </style>
 </head>
 
 <body>
 
-<h1>⚽ Bet AI</h1>
+<h1>⚽ Bet AI PRO</h1>
 
 <button onclick="run()">Analizza</button>
 
-<div id="out">Premi il bottone</div>
+<div id="out"></div>
 
 <script>
 function run() {
@@ -45,54 +58,71 @@ function run() {
 
     let games = data.response.slice(0, 20);
 
-    let best = null;
-    let bestScore = -999;
-    let bestTip = "";
+    let list = [];
 
     games.forEach(match => {
 
       let name = match.title.toLowerCase();
 
-      let score = 0;
+      let strength = 0;
 
-      // squadre forti
-      if (name.includes("psg") || name.includes("bayern") || name.includes("city")) score += 5;
-      if (name.includes("real") || name.includes("barcelona")) score += 4;
-      if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) score += 3;
+      // 🔥 FORZA SQUADRE
+      if (name.includes("psg") || name.includes("bayern") || name.includes("city")) strength += 5;
+      if (name.includes("real") || name.includes("barcelona")) strength += 4;
+      if (name.includes("inter") || name.includes("milan") || name.includes("juventus")) strength += 3;
 
-      // casa (simulata)
-      score += 1;
+      // ⚖️ EQUILIBRIO
+      if (name.includes("-")) strength += 2;
 
-      // attacco/difesa
+      // 🧠 ATTACCO / DIFESA
       let attack = Math.random() * 3;
       let defense = Math.random() * 3;
 
-      score += attack + defense;
+      // 🏠 CASA
+      let home = Math.random() > 0.5 ? 2 : 0;
+
+      let score = strength + attack + defense + home;
 
       let tip = "";
 
-      if (attack > 2) {
+      // 🎯 LOGICA PRONOSTICO
+      if (attack > 2.2 && strength > 4) {
         tip = "Over 2.5 ⚽";
-      } else if (defense > 2) {
+      } 
+      else if (attack > 1.5 && defense < 1.5) {
+        tip = "Goal ✅";
+      } 
+      else if (defense > 2.2) {
         tip = "Under 3.5 📉";
-      } else if (score > 6) {
+      } 
+      else if (home > 1 && strength > 3) {
         tip = "1 fisso 🏠";
-      } else {
+      } 
+      else {
         tip = "Goal ✅";
       }
 
-      if (score > bestScore) {
-        bestScore = score;
-        best = match;
-        bestTip = tip;
-      }
+      list.push({ match, score, tip });
 
     });
 
-    document.getElementById("out").innerHTML =
-      "🔥 MIGLIOR GIOCATA 🔥<br><br>" +
-      best.title + "<br><br>" +
-      "👉 " + bestTip;
+    // ordina migliori
+    list.sort((a, b) => b.score - a.score);
+
+    let picks = list.slice(0, 3);
+
+    let html = "<h2>🔥 SCHEDINA AI 🔥</h2>";
+
+    picks.forEach(p => {
+      html += `
+        <div class="card">
+          <div class="title">${p.match.title}</div>
+          <div class="tip">👉 ${p.tip}</div>
+        </div>
+      `;
+    });
+
+    document.getElementById("out").innerHTML = html;
 
   })
   .catch(() => {
