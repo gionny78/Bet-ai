@@ -8,23 +8,12 @@ app.get("/", (req, res) => {
   res.send("Server attivo 🚀");
 });
 
-// MATCHES
+// MATCHES (API che funziona subito)
 app.get("/matches", async (req, res) => {
   try {
-    const response = await fetch(
-      "https://api-football-v1.p.rapidapi.com/v3/fixtures?live=all",
-      {
-        method: "GET",
-        headers: {
-          "X-RapidAPI-Key": process.env.API_KEY,
-          "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-        }
-      }
-    );
-
+    const response = await fetch("https://www.scorebat.com/video-api/v3/");
     const data = await response.json();
     res.json(data);
-
   } catch (error) {
     res.send("Errore API: " + error.message);
   }
