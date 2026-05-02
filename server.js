@@ -1,27 +1,17 @@
 const express = require("express");
 const fetch = require("node-fetch");
-
 const app = express();
 
-// TEST
+app.use(express.static(__dirname));
+
 app.get("/", (req, res) => {
-  res.send("Server attivo 🚀");
+  res.sendFile(__dirname + "/index.html");
 });
 
-// MATCHES (API che funziona subito)
 app.get("/matches", async (req, res) => {
-  try {
-    const response = await fetch("https://www.scorebat.com/video-api/v3/");
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.send("Errore API: " + error.message);
-  }
+  const response = await fetch("https://www.scorebat.com/video-api/v3/");
+  const data = await response.json();
+  res.json(data.response);
 });
 
-// SERVER
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Server avviato 🚀");
-});
+app.listen(3000, () => console.log("Server attivo 🚀"));
