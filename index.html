@@ -1,99 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
+  <meta charset="UTF-8">
   <title>Partite</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       margin: 0;
       padding: 20px;
-      background: #f5f5f5;
-    }
-
-    h1 {
       text-align: center;
     }
 
+    h1 {
+      font-size: 32px;
+    }
+
     button {
-      width: 100%;
-      padding: 12px;
       background: black;
       color: white;
       border: none;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 16px;
+      padding: 15px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+      font-size: 18px;
+      margin: 20px 0;
     }
 
     .card {
       background: white;
+      border-radius: 15px;
       padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 500px;
+      text-align: left;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
     img {
       width: 100%;
-      border-radius: 8px;
+      border-radius: 10px;
+      margin-top: 10px;
     }
 
     iframe {
       width: 100%;
       height: 220px;
-      border: none;
+      border-radius: 10px;
       margin-top: 10px;
-      border-radius: 8px;
+      border: none;
+    }
+
+    .loader {
+      margin: 20px;
+      font-size: 18px;
     }
   </style>
 </head>
 
 <body>
 
-<h1>Partite ⚽</h1>
+  <h1>Partite ⚽</h1>
 
-<button onclick="caricaPartite()">Carica partite</button>
+  <button onclick="caricaPartite()">Carica partite</button>
 
-<div id="matches"></div>
+  <div id="loader" class="loader"></div>
+  <div id="matches"></div>
 
-<script>
-function caricaPartite() {
-  fetch("/matches")
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("matches");
-      container.innerHTML = "";
+  <script>
+    function caricaPartite() {
+      const loader = document.getElementById("loader");
+      loader.innerText = "Caricamento...";
 
-      data.forEach(match => {
-        const div = document.createElement("div");
-        div.className = "card";
+      fetch("https://bet-ai-1.onrender.com/matches") // 🔥 URL COMPLETO
+        .then(res => res.json())
+        .then(data => {
+          loader.innerText = "";
 
-        // 🔥 PRENDIAMO SOLO L'IFRAME (fix area nera)
-        let iframe = "";
+          const container = document.getElementById("matches");
+          container.innerHTML = "";
 
-        if (match.videos && match.videos.length > 0) {
-          const embed = match.videos[0].embed;
+          data.forEach(match => {
+            const div = document.createElement("div");
+            div.className = "card";
 
-          const srcMatch = embed.match(/src='([^']+)'/);
-          if (srcMatch) {
-            iframe = `<iframe src="${srcMatch[1]}" allowfullscreen></iframe>`;
-          }
-        }
+            let videoHTML = "";
 
-        div.innerHTML = `
-          <h3>${match.title}</h3>
-          <p>${match.competition}</p>
-          <img src="${match.thumbnail}">
-          ${iframe}
-        `;
+            if (match.videos && match.videos.length > 0) {
+              videoHTML = match.videos[0].embed;
+            }
 
-        container.appendChild(div);
-      });
-    })
-    .catch(err => console.log(err));
-}
-</script>
+            div.innerHTML = `
+              <h3>${match.title}</h3>
+              <p>${match.competition}</p>
+              <img src="${match.thumbnail}">
+              ${videoHTML}
+            `;
+
+            container.appendChild(div);
+          });
+        })
+        .catch(err => {
+          loader.innerText = "Errore nel caricamento";
+          console.log("Errore:", err);
+        });
+    }
+  </script>
 
 </body>
 </html>
