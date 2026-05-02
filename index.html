@@ -1,34 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bet AI</title>
+  <title>Partite</title>
 </head>
 <body>
 
 <h1>Partite ⚽</h1>
 
+<button onclick="caricaPartite()">Carica partite</button>
+
 <div id="matches"></div>
 
 <script>
-fetch("/matches")
-  .then(res => res.json())
-  .then(data => {
-    const container = document.getElementById("matches");
+function caricaPartite() {
+  fetch("/matches")
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("matches");
+      container.innerHTML = "";
 
-    data.response.forEach(match => {
-      const div = document.createElement("div");
+      data.forEach(match => {
+        const div = document.createElement("div");
 
-      div.innerHTML = `
-        <h3>${match.title}</h3>
-        <p>${match.competition}</p>
-        <img src="${match.thumbnail}" width="300"/>
-        <hr>
-      `;
+        div.innerHTML = `
+          <h3>${match.title}</h3>
+          <p>${match.competition}</p>
+          <img src="${match.thumbnail}" width="300"/>
+          <hr>
+        `;
 
-      container.appendChild(div);
+        container.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.log("Errore:", err);
     });
-  })
-  .catch(err => console.log(err));
+}
 </script>
 
 </body>
