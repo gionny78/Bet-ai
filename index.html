@@ -7,11 +7,15 @@
 
 <h1>Partite ⚽</h1>
 
-<button onclick="caricaPartite()">Carica partite</button>
+<button id="btn">Carica partite</button>
 
 <div id="matches"></div>
 
 <script>
+const btn = document.getElementById("btn");
+
+btn.addEventListener("click", caricaPartite);
+
 function caricaPartite() {
   fetch("/matches")
     .then(res => res.json())
@@ -34,6 +38,7 @@ function caricaPartite() {
     })
     .catch(err => {
       console.log("Errore:", err);
+      alert("Errore caricamento partite");
     });
 }
 </script>
