@@ -53,8 +53,12 @@ function caricaPartite() {
   const container = document.getElementById("matches");
   container.innerHTML = "Caricamento...";
 
-  fetch("https://bet-ai-1.onrender.com/matches")
-    .then(res => res.json())
+  // 🔥 FIX DEFINITIVO (niente più load failed)
+  fetch("/matches")
+    .then(res => {
+      if (!res.ok) throw new Error("Errore server");
+      return res.json();
+    })
     .then(data => {
 
       container.innerHTML = "";
@@ -81,6 +85,7 @@ function caricaPartite() {
 
     })
     .catch(err => {
+      console.log(err);
       container.innerHTML = "Errore!";
     });
 }
