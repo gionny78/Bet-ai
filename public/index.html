@@ -14,20 +14,19 @@
 
 <script>
 async function caricaPartite() {
-  const container = document.getElementById("contenitore");
-  container.innerHTML = "Caricamento...";
+  const contenitore = document.getElementById("contenitore");
+  contenitore.innerHTML = "Caricamento...";
 
   try {
     const res = await fetch("/matches");
     const data = await res.json();
 
-    container.innerHTML = "";
+    contenitore.innerHTML = "";
 
     data.forEach(match => {
       const div = document.createElement("div");
 
       let video = "";
-
       if (match.videos && match.videos.length > 0) {
         video = match.videos[0].embed;
       }
@@ -39,12 +38,11 @@ async function caricaPartite() {
         <hr>
       `;
 
-      container.appendChild(div);
+      contenitore.appendChild(div);
     });
 
   } catch (err) {
-    container.innerHTML = "Errore!";
-    console.log(err);
+    contenitore.innerHTML = "Errore caricamento";
   }
 }
 </script>
