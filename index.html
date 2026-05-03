@@ -31,7 +31,7 @@ async function caricaPartite() {
         <p>${match.competition}</p>
       `;
 
-      // 👉 gestione video sicura
+      // ✅ VIDEO SICURO
       if (match.videos && match.videos.length > 0) {
         const wrapper = document.createElement("div");
         wrapper.innerHTML = match.videos[0].embed;
