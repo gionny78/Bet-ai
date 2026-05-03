@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Partite ⚽</title>
+</head>
+<body>
+
+<h1>Partite ⚽</h1>
+
+<button onclick="caricaPartite()">Carica partite</button>
+
+<div id="contenitore"></div>
+
+<script>
+async function caricaPartite() {
+  const contenitore = document.getElementById("contenitore");
+  contenitore.innerHTML = "Caricamento...";
+
+  try {
+    const res = await fetch("/matches");
+    const data = await res.json();
+
+    contenitore.innerHTML = "";
+
+    data.forEach(match => {
+      const div = document.createElement("div");
+
+      let video = "";
+      if (match.videos && match.videos.length > 0) {
+        video = match.videos[0].embed;
+      }
+
+      div.innerHTML = `
+        <h3>${match.title}</h3>
+        <p>${match.competition}</p>
+        ${video}
+        <hr>
+      `;
+
+      contenitore.appendChild(div);
+    });
+
+  } catch (err) {
+    contenitore.innerHTML = "Errore caricamento";
+  }
+}
+</script>
+
+</body>
+</html>
 
