@@ -24,7 +24,11 @@ async function caricaPartite() {
     container.innerHTML = "";
 
     data.forEach(match => {
-      const video = match.videos[0]?.embed || "";
+      let video = "";
+
+if (match.videos && match.videos.length > 0) {
+  video = match.videos[0].embed;
+}
 
       const div = document.createElement("div");
       div.innerHTML = `
