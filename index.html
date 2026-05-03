@@ -1,52 +1,78 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Partite ⚽</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bet AI</title>
+
+<style>
+body {
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+button {
+  padding:12px;
+  background:#22c55e;
+  border:none;
+  color:white;
+  margin:10px;
+  border-radius:8px;
+}
+
+.card {
+  background:#1e293b;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+}
+</style>
+
 </head>
+
 <body>
 
-<h1>Partite ⚽</h1>
+<h1>⚽ Bet AI</h1>
 
-<button onclick="caricaPartite()">Carica partite</button>
+<button onclick="caricaPartite()">Trova giocate</button>
 
-<div id="contenitore"></div>
+<div id="output"></div>
 
 <script>
-async function caricaPartite() {
-  const contenitore = document.getElementById("contenitore");
-  contenitore.innerHTML = "Caricamento...";
 
-  try {
-    const res = await fetch("/matches");
-    const data = await res.json();
+function caricaPartite(){
 
-    contenitore.innerHTML = "";
+ let partite = [
+  {home:"Inter", away:"Milan", quota:1.8},
+  {home:"Juventus", away:"Roma", quota:2.1},
+  {home:"Napoli", away:"Lazio", quota:1.9}
+ ];
 
-    data.forEach(match => {
-      const div = document.createElement("div");
+ let html = "";
 
-      let video = "";
-      if (match.videos && match.videos.length > 0) {
-        video = match.videos[0].embed;
-      }
+ partite.forEach(p => {
 
-      div.innerHTML = `
-        <h3>${match.title}</h3>
-        <p>${match.competition}</p>
-        ${video}
-        <hr>
-      `;
+  let prob = Math.random();
+  let value = (prob * p.quota) - 1;
 
-      contenitore.appendChild(div);
-    });
-
-  } catch (err) {
-    contenitore.innerHTML = "Errore caricamento";
+  if(value > 0.08 && prob > 0.55){
+    html += `
+    <div class="card">
+      ${p.home} vs ${p.away}<br>
+      💰 GIOCA<br>
+      Quota: ${p.quota}
+    </div>`;
   }
+
+ });
+
+ if(html==="") html = "🚫 Nessuna giocata oggi";
+
+ document.getElementById("output").innerHTML = html;
 }
+
 </script>
 
 </body>
 </html>
-
