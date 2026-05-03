@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Partite</title>
+  <meta charset="UTF-8">
+  <title>Partite</title>
 </head>
+
 <body>
 
 <h1>Partite ⚽</h1>
-
 <button onclick="caricaPartite()">Carica partite</button>
 
 <div id="contenitore"></div>
@@ -24,18 +24,26 @@ async function caricaPartite() {
     container.innerHTML = "";
 
     data.forEach(match => {
-      let video = "";
-
-if (match.videos && match.videos.length > 0) {
-  video = match.videos[0].embed;
-}
-
       const div = document.createElement("div");
+
       div.innerHTML = `
         <h3>${match.title}</h3>
         <p>${match.competition}</p>
-        ${video}
       `;
+
+      // 👉 gestione video sicura
+      if (match.videos && match.videos.length > 0) {
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = match.videos[0].embed;
+
+        const iframe = wrapper.querySelector("iframe");
+
+        if (iframe) {
+          iframe.style.width = "100%";
+          iframe.style.height = "200px";
+          div.appendChild(iframe);
+        }
+      }
 
       container.appendChild(div);
     });
