@@ -1,51 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bet AI</title>
+<title>Bet AI PRO</title>
 
 <style>
-body {background:#0f172a; color:white; text-align:center; font-family:Arial;}
-.card {background:#1e293b; margin:15px; padding:15px; border-radius:10px;}
-button {padding:10px; background:green; color:white; border:none;}
+body {
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+.card {
+  background:#1e293b;
+  margin:15px;
+  padding:15px;
+  border-radius:10px;
+}
+
+button {
+  padding:12px;
+  background:#22c55e;
+  border:none;
+  color:white;
+  font-size:16px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>⚽ Bet AI LIVE</h1>
+<h1>⚽ Bet AI PRO</h1>
 <button onclick="run()">Trova partite</button>
 
 <div id="out"></div>
 
 <script>
 
-const API_KEY = "44499c55bca08e30a2154358d176f622";
+const API_KEY = "METTI_LA_TUA_API_KEY_QUI";
 
 async function run(){
 
- let res = await fetch("https://v3.football.api-sports.io/fixtures?league=39&season=2023",)", {
-   headers: { "x-apisports-key": API_KEY }
- });
-
- let data = await res.json();
-
- let html = "";
-
- data.response.forEach(m => {
-
-   let home = m.teams.home.name;
-   let away = m.teams.away.name;
-
-   html += `<div class="card">
-     ${home} vs ${away}<br>
-     🔍 Analisi in corso...
-   </div>`;
- });
-
- if(html==="") html = "Nessuna partita trovata";
+ let html = "Caricamento...";
 
  document.getElementById("out").innerHTML = html;
+
+ try {
+
+  let res = await fetch("https://v3.football.api-sports.io/fixtures?league=39&season=2023", {
+    headers: { "x-apisports-key": API_KEY }
+  });
+
+  let data = await res.json();
+
+  html = "";
+
+  data.response.slice(0,5).forEach(m => {
+
+    let home = m.teams.home.name;
+    let away = m.teams.away.name;
+
+    // logica base (poi miglioriamo)
+    let forza = Math.random();
+
+    let consiglio = forza > 0.7 ? "💰 GIOCA" : "⚠️ RISCHIO";
+
+    html += `<div class="card">
+      ${home} vs ${away}<br>
+      ${consiglio}
+    </div>`;
+  });
+
+  if(html==="") html = "🚫 Nessuna partita trovata";
+
+  document.getElementById("out").innerHTML = html;
+
+ } catch(e){
+  document.getElementById("out").innerHTML = "❌ Errore API";
+ }
+
 }
 
 </script>
