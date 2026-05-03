@@ -57,9 +57,22 @@ let res = await fetch("https://corsproxy.io/?https://v3.football.api-sports.io/f
   }
 });
 
-  let data = await res.json();
+let data = await res.json();
 
-  html = "";
+let html = "";
+
+data.response.forEach(m => {
+
+  let home = m.teams.home.name;
+  let away = m.teams.away.name;
+
+  html += `<div class="card">
+    ${home} vs ${away}
+  </div>`;
+
+});
+
+document.getElementById("out").innerHTML = html;
 
   data.response.slice(0,5).forEach(m => {
 
