@@ -5,71 +5,47 @@
 <title>Bet AI</title>
 
 <style>
-body {
-  background:#0f172a;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-}
-
-button {
-  padding:12px;
-  background:#22c55e;
-  border:none;
-  color:white;
-  margin:10px;
-  border-radius:8px;
-}
-
-.card {
-  background:#1e293b;
-  margin:10px;
-  padding:10px;
-  border-radius:10px;
-}
+body {background:#0f172a; color:white; text-align:center; font-family:Arial;}
+.card {background:#1e293b; margin:15px; padding:15px; border-radius:10px;}
+button {padding:10px; background:green; color:white; border:none;}
 </style>
-
 </head>
 
 <body>
 
-<h1>⚽ Bet AI</h1>
+<h1>⚽ Bet AI LIVE</h1>
+<button onclick="run()">Trova partite</button>
 
-<button onclick="caricaPartite()">Trova giocate</button>
-
-<div id="output"></div>
+<div id="out"></div>
 
 <script>
 
-function caricaPartite(){
+const API_KEY = "INSERISCI_LA_TUA_API_KEY";
 
- let partite = [
-  {home:"Inter", away:"Milan", quota:1.8},
-  {home:"Juventus", away:"Roma", quota:2.1},
-  {home:"Napoli", away:"Lazio", quota:1.9}
- ];
+async function run(){
+
+ let res = await fetch("https://v3.football.api-sports.io/fixtures?next=5", {
+   headers: { "x-apisports-key": API_KEY }
+ });
+
+ let data = await res.json();
 
  let html = "";
 
- partite.forEach(p => {
+ data.response.forEach(m => {
 
-  let prob = Math.random();
-  let value = (prob * p.quota) - 1;
+   let home = m.teams.home.name;
+   let away = m.teams.away.name;
 
-  if(value > 0.08 && prob > 0.55){
-    html += `
-    <div class="card">
-      ${p.home} vs ${p.away}<br>
-      💰 GIOCA<br>
-      Quota: ${p.quota}
-    </div>`;
-  }
-
+   html += `<div class="card">
+     ${home} vs ${away}<br>
+     🔍 Analisi in corso...
+   </div>`;
  });
 
- if(html==="") html = "🚫 Nessuna giocata oggi";
+ if(html==="") html = "Nessuna partita trovata";
 
- document.getElementById("output").innerHTML = html;
+ document.getElementById("out").innerHTML = html;
 }
 
 </script>
