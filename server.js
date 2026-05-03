@@ -1,34 +1,32 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(__dirname));
+// 📌 SERVE SOLO FILE STATICI (index.html)
+app.use(express.static(path.join(__dirname)));
 
-// ROUTE PARTITE
+// 📌 HOMEPAGE FORZATA (QUESTO RISOLVE IL TUO BUG)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// 📌 API PARTITE
 app.get("/matches", async (req, res) => {
   try {
     const response = await fetch("https://www.scorebat.com/video-api/v3/");
-
-    if (!response.ok) {
-      throw new Error("Errore API");
-    }
-
     const data = await response.json();
 
-    if (!data.response) {
-      throw new Error("Formato dati non valido");
-    }
-
     res.json(data.response);
-
   } catch (error) {
-    console.log("ERRORE:", error.message);
+    console.log(error);
     res.status(500).json({ error: "Errore nel server" });
   }
 });
 
+// 📌 START SERVER
 app.listen(PORT, () => {
   console.log("Server attivo sulla porta " + PORT);
 });
