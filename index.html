@@ -51,12 +51,16 @@ async function run(){
 
   let oggi = new Date().toISOString().split("T")[0];
 
-let res = await fetch("https://corsproxy.io/?https://v3.football.api-sports.io/fixtures?date=" + oggi, {
+let res = await fetch(
+`https://v3.football.api-sports.io/fixtures?date=${oggi}`,
+{
+  method: "GET",
   headers: {
     "x-apisports-key": API_KEY
   }
 });
 
+let data = await res.json();
 let data = await res.json();
 
 let html = "";
